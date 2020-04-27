@@ -1,7 +1,7 @@
 <template>
    <div>
     <b-navbar toggleable="lg" type="dark" variant="dark" class="navbar">
-    <b-navbar-brand class="title font-weight-bold">Rent a car agent</b-navbar-brand>
+    <b-navbar-brand class="title font-weight-bold">Rent-a-Car Agent</b-navbar-brand>
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="ml-auto">
