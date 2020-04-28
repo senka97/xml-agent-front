@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import HomePage from '../components/HomePage.vue'
 import LoginPage from '../components/LoginPage.vue'
 import RegistrationPage from '../components/RegistrationPage.vue'
+import NewAd from '../components/NewAd.vue'
 import VehicleDetails from '../components/VehicleDetails.vue'
 import Cart from '../components/Cart.vue'
 
@@ -27,6 +28,10 @@ export default new Router({
             component: RegistrationPage
         },
         {
+            path: '/newAd',
+            name: 'NewAd',
+            component: NewAd
+        },
             path: '/vehicle/details',
             name: 'VehicleDetails',
             component: VehicleDetails
