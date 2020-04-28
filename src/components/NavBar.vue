@@ -1,10 +1,13 @@
 <template>
    <div>
     <b-navbar toggleable="lg" type="dark" variant="dark" class="navbar">
-    <b-navbar-brand class="title font-weight-bold">Rent a car agent</b-navbar-brand>
+    <b-navbar-brand class="title font-weight-bold">Rent-a-Car Agent</b-navbar-brand>
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="ml-auto">
+
+            <!--Za ulogovane korisnike-->
+           <!--  <b-nav-item href="/cart">Cart</b-nav-item> -->
 
             <!--Za neregistrovane korisnike-->
             <b-button class="mr-3"><a href="/login" class="removeDecoration">Sign in</a></b-button>
