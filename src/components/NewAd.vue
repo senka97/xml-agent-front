@@ -17,7 +17,15 @@
                 <b-container>
                     <b-row>
                         <input @change="getImage" type="file" ref="file" style="display: none">
-                        <b-img @change="onFileChange()"  @click="$refs.file.click()" class="image"  style="width:200px; height:200px" :src="image"></b-img>
+                        <b-img v-if="images.length==0" src="https://via.placeholder.com/200"/>
+                        <b-carousel ref="imageCarousel" v-model="currentImage" controls interval=100000>
+                            <b-carousel-slide v-for="img in images" :key="img" :img-src="img" style="width:200px; height:200px">
+                            </b-carousel-slide>
+                        </b-carousel>
+                        <b-button-group class="mt-3">
+                            <b-button style="width:100px; height:50px" size="sm" @click="$refs.file.click()" >Add an image</b-button>
+                            <b-button style="width:100px; height:50px" size="sm" @click="removeImage()" variant="dark" >Remove image</b-button>
+                        </b-button-group>
                     </b-row>
                 </b-container>
                 </b-col>
@@ -32,17 +40,17 @@
                         <b-row>
                             <b-col>
                                 <b-form-group label-cols="1" label-cols-lg="3" label-size="sm" label="Brand:" >
-                                <b-form-input label-cols="1" size="sm" v-model="model"></b-form-input>
+                                <b-form-input label-cols="1" size="sm" v-model="ad.brand"></b-form-input>
                                 </b-form-group>
                             </b-col>
                             <b-col>
                                 <b-form-group label-cols="1" label-cols-lg="3" label-size="sm" label="Model:" >
-                                <b-form-input label-cols="1" size="sm" v-model="model"></b-form-input>
+                                <b-form-input label-cols="1" size="sm" v-model="ad.model"></b-form-input>
                                 </b-form-group>
                             </b-col>
                             <b-col>
                                 <b-form-group label-cols-lg="3" label-size="sm" label="Class:" >
-                                    <b-form-select v-model="selectedClass" :options="classes" size="sm"></b-form-select>
+                                    <b-form-select v-model="ad.class" :options="classes" size="sm"></b-form-select>
                                 </b-form-group>
                             </b-col>
                         </b-row>
@@ -55,17 +63,17 @@
                         <b-row>
                             <b-col>
                                 <b-form-group label-cols-lg="5" label-size="sm"  label="Feul type:" >
-                                    <b-form-select v-model="selectedFeul" :options="feulTypes" size="sm"></b-form-select>
+                                    <b-form-select v-model="ad.feulType" :options="feulTypes" size="sm"></b-form-select>
                                 </b-form-group>
                             </b-col>
                             <b-col>
                                 <b-form-group label-cols-lg="5" label-size="sm" label="Gear type:" >
-                                 <b-form-select v-model="selectedGear" :options="gearTypes" size="sm"></b-form-select>
+                                 <b-form-select v-model="ad.gearType" :options="gearTypes" size="sm"></b-form-select>
                                 </b-form-group>
                             </b-col>
                             <b-col>
                                 <b-form-group label-cols-lg="3" label-size="sm" label="Seats for children:" >
-                                <b-form-input type="number" min="0" size="sm" placeholder="Number of seats"></b-form-input>
+                                <b-form-input type="number" min="0" size="sm" placeholder="Number of seats" v-model="ad.seatsChildren"></b-form-input>
                                 </b-form-group>
                             </b-col>
                         </b-row>
@@ -73,12 +81,13 @@
                             <b-col>
                                  <b-form-group  label-cols-lg="5" label-size="sm" label="Kilometers driven:" >
                                      <b-input-group size="sm" append="km">
-                                        <b-form-input type="number" min="0" size="sm" placeholder="Number of kilometers"></b-form-input>
+                                        <b-form-input type="number" min="0" size="sm" placeholder="Number of kilometers" v-model="ad.kmDriven"></b-form-input>
                                     </b-input-group>
                                 </b-form-group>
                             </b-col>
                             <b-col>
                                 <b-form-checkbox 
+                                    v-model="ad.colision"
                                     size="2sm"
                                     value="accepted"
                                     unchecked-value="not_accepted"
@@ -96,12 +105,12 @@
                         <b-row>
                         <b-col>
                             <b-form-group label-cols-lg="5" label-size="sm"  label="Rentable from:" >
-                            <b-form-datepicker size="sm" :min="minDate" locale="en" placeholder="Start date"></b-form-datepicker>
+                            <b-form-datepicker size="sm" :min="minDate" locale="en" placeholder="Start date"  v-model="ad.minDate"></b-form-datepicker>
                             </b-form-group>
                         </b-col>
                         <b-col>
                             <b-form-group label-cols-lg="5" label-size="sm" label="to:" >
-                            <b-form-datepicker size="sm" :min="minDate" locale="en" placeholder="End date"></b-form-datepicker>
+                            <b-form-datepicker size="sm" :min="minDate" locale="en" placeholder="End date" v-model="ad.maxDate"></b-form-datepicker>
                             </b-form-group>
                         </b-col>
                         </b-row>
@@ -109,14 +118,14 @@
                             <b-col>
                                 <b-form-group  label-cols-lg="5" label-size="sm"  label="Price from:" >
                                      <b-input-group size="sm" append="€">
-                                        <b-form-input type="number" min="0" size="sm" placeholder="Minimal price"></b-form-input>
+                                        <b-form-input type="number" min="0" size="sm" placeholder="Minimal price" v-model="ad.minPrice"></b-form-input>
                                     </b-input-group>
                                 </b-form-group>
                             </b-col>
                             <b-col>
                                  <b-form-group  label-cols-lg="5" label-size="sm"  label="to:" >
                                      <b-input-group size="sm" append="€">
-                                        <b-form-input type="number" min="0" size="sm" placeholder="Maximum price"></b-form-input>
+                                        <b-form-input type="number" min="0" size="sm" placeholder="Maximum price" v-model="ad.maxPrice"></b-form-input>
                                     </b-input-group>
                                 </b-form-group>
                             </b-col>
@@ -127,7 +136,7 @@
                             <b-col md="6">
                                 <b-form-checkbox 
                                     id="checkbox-1"
-                                    v-model="status"
+                                    v-model="ad.androidApp"
                                     name="checkbox-1"
                                     value="accepted"
                                     unchecked-value="not_accepted"
@@ -136,6 +145,16 @@
                                
                             </b-col>
                              <b-col>
+                            </b-col>
+                        </b-row>
+                        <b-row>
+                            <br/>
+                        </b-row>
+                        <b-row>
+                            <b-col>
+                                <b-button size="lg">
+                                    Submit
+                                </b-button>
                             </b-col>
                         </b-row>
                      </b-container>
@@ -147,6 +166,8 @@
 </template>
 
 <script>
+
+
 export default {
     name: 'NewAd',
     data(){
@@ -169,10 +190,9 @@ export default {
                  { value: null, text: 'Choose the feul' },
                  { value: 'Gasoline', text: 'Gasoline' },
                  { value: 'Diesel', text: 'Diesel' },
-                 { value: 'Liquified Petroleum', text: 'Liquified Petroleum' },
-                 { value: 'Compressed Natural Gas', text: 'Compressed Natural Gas' },
-                 { value: 'Etahnol', text: 'Etahnol' },
-                 { value: 'Bio-diesel', text: 'Bio-diesel' }
+                 { value: 'Hybridm', text: 'Hybrid' },
+                 { value: 'Petrol', text: 'Petrol' },
+                 { value: 'Electric', text: 'Electric' },
              ],
              classes: [
                 { value: null, text: 'Choose the class' },
@@ -184,7 +204,24 @@ export default {
                  { value: 'Executive', text: 'Executive' },
                  { value: 'Luxury saloon', text: 'Luxury saloon' }
              ],
-             image: "https://via.placeholder.com/200"
+             image: "https://via.placeholder.com/200",
+             images:[],
+             currentImage:0,
+             ad:{
+                brand:"",
+                model:"",
+                class:null,
+                feulType:null,
+                gearType:null,
+                seatsChildren:0,
+                kmDriven:0,
+                colision:"not_accepted",
+                minDate:null,
+                maxDate:null,
+                minPrice:null,
+                maxPrice:null,
+                androidApp:"not_accepted"
+             }
              
         }
     },
@@ -197,8 +234,21 @@ export default {
             reader.readAsDataURL(image);
             reader.onload = e => {
                 this.image= e.target.result
+                this.images.push(this.image)
             }
+            reader.onloadend = () => this.changeToLastSlide();
+            
+        },
+        changeToLastSlide(){
+            console.log(this.images.length-1)
+            this.currentImage=this.images.length-1;
+            this.$refs.imageCarousel.setSlide(this.images.length-1);
+        },
+        removeImage(){
+            this.images.splice(this.currentImage,1);
+            this.currentImage=this.currentImage-1;
         }
+        
     }
 }
 </script>
