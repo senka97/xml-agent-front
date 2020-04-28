@@ -6,6 +6,9 @@
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="ml-auto">
 
+            <!--Za ulogovane korisnike-->
+           <!--  <b-nav-item href="/cart">Cart</b-nav-item> -->
+
             <!--Za neregistrovane korisnike-->
             <b-button class="mr-3"><a href="/login" class="removeDecoration">Sign in</a></b-button>
             <b-button><a href="/registration" class="removeDecoration">Sign up</a></b-button>

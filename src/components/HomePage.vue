@@ -56,10 +56,10 @@
                           <b-form-select v-model="selectedModel" :options="models"></b-form-select>
                         </b-col>
                         <b-col>
-                          <b-form-input type="text" placeholder="Price from"></b-form-input>
+                          <b-form-input type="number" min="0" placeholder="Price from"></b-form-input>
                         </b-col>
                         <b-col>
-                          <b-form-input type="text" placeholder="Price to"></b-form-input>
+                          <b-form-input type="number" min="0" placeholder="Price to"></b-form-input>
                         </b-col>
                      </b-row>
                      <b-row class="mt-2">
@@ -97,17 +97,17 @@
                      <b-row class="mt-2">
                        <b-col>
                          <b-form-group label="Mileage:">
-                          <b-form-input type="number"></b-form-input>
+                          <b-form-input type="number" min="0"></b-form-input>
                         </b-form-group>
                        </b-col>
                        <b-col>
                         <b-form-group label="Kilometers limit:">
-                          <b-form-input type="number" placeholder="Unlimited"></b-form-input>
+                          <b-form-input type="number" min="0" placeholder="Unlimited"></b-form-input>
                         </b-form-group>
                        </b-col>
                        <b-col>
                           <b-form-group label="Number of children seats:">
-                          <b-form-input type="number" placeholder="0"></b-form-input>
+                          <b-form-input type="number" min="0"></b-form-input>
                         </b-form-group>
                        </b-col>
                        <b-col>
@@ -130,8 +130,11 @@
         </b-form>
       </b-card>
     </div>
-    <div class="container mt-5 d-flex justify-content-center" v-for="v in vehicles" :key="v.id">
-      <VehicleCard v-if="show" :vehicle="v"/>
+    <div class="container d-flex mt-5">
+      <b-form-select v-model="sortSelected" :options="sortingOptions" class="col-2 ml-auto mr-custom" v-if="show"></b-form-select>  
+    </div>
+    <div class="container mt-4 d-flex justify-content-center" v-for="v in vehicles" :key="v.id">
+      <VehicleCard v-if="show" :showDiffButtons="true" :vehicle="v"/>
     </div>
   </div>
 </template>
@@ -218,6 +221,16 @@ export default {
           }
         ],
         show: false,
+        sortSelected: null,
+        sortingOptions: [
+          { value: null, text: 'Sort by', disabled: true},
+          { value: 'priceAsc', text: 'Price ascending' },
+          { value: 'priceDesc', text: 'Price descendig' },
+          { value: 'mileageAsc', text: 'Mileage ascending' },
+          { value: 'mileageDesc', text: 'Mileage descending'},
+          { value: 'rateAsc', text: 'Rate ascending'},
+          { value: 'rateDesc', text: 'Rate descending'},
+        ],
       }
   },
   methods: {
@@ -258,6 +271,10 @@ export default {
 
 .mt-custom {
   margin-top: 12%;
+}
+
+.mr-custom {
+  margin-right: 12.5%;
 }
 
 </style>
