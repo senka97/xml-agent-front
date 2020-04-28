@@ -49,8 +49,8 @@
         </b-card-body>
         <b-row>
           <!--Dugme "Add to {korpica}" ce se prikazivati samo ako je korisnik ulogovan-->
-          <b-button type="button" class="ml-auto mr-2 mt-3" @click="add">Add to <b-icon icon="bucket-fill"></b-icon></b-button>
-          <b-button type="button" class="mr-4 mt-3"><a class="removeDecoration" href="/vehicle/details">Details</a></b-button>
+          <b-button v-show="showDiffButtons" type="button" class="ml-auto mr-2 mt-3"> <a class="removeDecoration" href="/cart">Add to <b-icon icon="bucket-fill"></b-icon></a></b-button>
+          <b-button v-show="showDiffButtons" type="button" class="mr-4 mt-3"><a class="removeDecoration" href="/vehicle/details">Details</a></b-button>
         </b-row> 
       </b-col>
     </b-row>
@@ -61,7 +61,8 @@
 export default {
     name: 'VehicleCard',
     props: {
-        vehicle: {}
+        vehicle: {},
+        showDiffButtons: Boolean,
     },
     data() {
         return {
