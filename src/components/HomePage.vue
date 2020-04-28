@@ -1,30 +1,10 @@
 <template>
    <div > 
-       <b-navbar toggleable="lg" type="dark" variant="info">
-          <b-navbar-brand href="/"> <b> Rent a Car </b> </b-navbar-brand>
-         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-
-          <b-navbar-toggle target="nav-collapse1"></b-navbar-toggle>
-
-          <b-collapse id="nav-collapse1" is-nav>
-            <b-navbar-nav class="ml-auto">
-              <b-nav-item href="/homePage" link-classes="text-light"><b>Search Cars</b></b-nav-item>
-              <b-nav-item href="/postAd" link-classes="text-light"><b>Post Ad</b></b-nav-item>
-            </b-navbar-nav>
-
-          <b-collapse id="nav-collapse" is-nav>
-            <b-navbar-nav class="ml-auto">
-              <!--<b-nav-item href="#"><b-icon style="width: 1.7em; height: 1.7em;" icon="bell-fill" class="rounded-circle bg-info p-2" variant="light"></b-icon><span class="badge badge-notify">3</span></b-nav-item> -->
-              <b-nav-item href="/login" link-classes="text-light"><b>Login</b></b-nav-item>
-              <b-nav-item href="/registration" link-classes="text-light"><b>Register</b></b-nav-item>
-            </b-navbar-nav>
-          </b-collapse>  
-          </b-collapse>
-        </b-navbar>  
-
+     <NavBar />
+       
   <div class="div-search">
     <b-nav vertical >
-      <b-card id="card" no-body  bg-variant="info" text-variant="light" header-text-variant="dark" align="center" header-bg-variant="light" header="Find a car for you" >
+      <b-card class="shadow" id="card" no-body  bg-variant="light" text-variant="dark" header-text-variant="dark" align="center" header-bg-variant="light" header="Find a car for you" >
        <b-card-text class="div-filter-card">
           <b-form @submit.prevent="search1">
           <b-form-group  align="left" id="input-group-1" label="Location:" label-for="location">
@@ -36,18 +16,18 @@
          <b-form-group  align="left" id="input-group-3" label="End date:" label-for="endDate" > 
             <b-form-datepicker :min="minDate" :max="maxDate" v-model="endDate" locale="en" placeholder="End date"></b-form-datepicker>
          </b-form-group>
-         <b-button type="submit" variant="light">Search</b-button>
-         
-         <p v-if="showError" class="p-error">Error</p>
+         <b-button v-b-tooltip.hover title=" You need to fill form fields" type="submit" pill :disabled="!formIsValid">Search</b-button>
+         <p v-if="showError"  class="p-error">Error</p>
         </b-form>
         </b-card-text>
       </b-card>
     </b-nav>
   </div>
 
-  <div class="div-filter">
+ <div class="div-filter">
     <div >
-     <b-card id="card" no-body  bg-variant="info" header-bg-variant="light" header-text-variant="dark" text-variant="light" header="Filter cars">
+     <b-card class="shadow" id="card" no-body  bg-variant="light" header-bg-variant="light" header-text-variant="dark" text-variant="dark" header="Advanced search">
+        <b-form @submit.prevent="search2">
     <b-card-text class="div-filter-card">
       <div class="containter mx-2 row">
         <div class="col">
@@ -55,6 +35,15 @@
             <b-form-select id="carBrand" v-model="brand" :options="brands">
                 <template v-slot:first>
                   <b-form-select-option :value="null">Select brand</b-form-select-option>
+                </template>
+              </b-form-select>  
+          </b-form-group>
+        </div>
+        <div class="col">
+          <b-form-group label-cols="1" label-cols-lg="4" label-size="sm" label="Car model:" label-for="carModel">
+            <b-form-select id="carModel" v-model="model" :options="models">
+                <template v-slot:first>
+                  <b-form-select-option :value="null">Select model</b-form-select-option>
                 </template>
               </b-form-select>  
           </b-form-group>
@@ -68,11 +57,7 @@
               </b-form-select>  
           </b-form-group>
         </div>
-        <div class="col">
-            <b-form-group label-cols="1" label-cols-lg="6" label-size="sm" label="Mileage:" label-for="mileage">
-            <b-form-input id="mileage" :min="0" type="number" placeholder="Choose number" size="sm" v-model="mileage"></b-form-input>
-           </b-form-group>
-        </div>
+        
     </div>
     <div class="containter mx-2 row">
         <div class="col">
@@ -90,10 +75,11 @@
            </b-form-group>
         </div>
         <div class="col">
-            <b-form-group label-cols="1" label-cols-lg="6" label-size="sm" label="Planned mileage:" label-for="plannedMileage">
-            <b-form-input id="plannedMileage" :min="0" type="number" placeholder="Choose number" size="sm" v-model="plannedMileage"></b-form-input>
+            <b-form-group label-cols="1" label-cols-lg="6" label-size="sm" label="Mileage:" label-for="mileage">
+            <b-form-input id="mileage" :min="0" type="number" placeholder="Choose number" size="sm" v-model="mileage"></b-form-input>
            </b-form-group>
         </div>
+        
     </div> 
     <div class="containter mx-2 row">
         <div class="col">
@@ -120,19 +106,32 @@
           </div>
         </div>
         <div class="col">
-            <b-form-group label-cols="6" label-cols-lg="8" label-size="sm" label="Collision Damage Waiver Protection:" label-for="checkbox-1">
-              <b-form-checkbox plain size="lg" id="checkbox-1" v-model="CDWProtection" name="checkbox-1" value="true" unchecked-value="false"></b-form-checkbox>
+            <b-form-group label-cols="1" label-cols-lg="6" label-size="sm" label="Planned mileage:" label-for="plannedMileage">
+            <b-form-input id="plannedMileage" :min="0" type="number" placeholder="Unlimited" size="sm" v-model="plannedMileage"></b-form-input>
            </b-form-group>
         </div>
     </div> 
+    <div class="containter mx-2 row">
+      <div class="col">
+          <b-form-group class="mt-custom">
+              <b-form-checkbox  id="checkbox-1" size="sm" v-model="CDWProtection"  value="true" unchecked-value="false"> Collision Damage Waiver Protection </b-form-checkbox>
+              
+          </b-form-group> 
+      </div>
+      <div class="col"> 
+        <b-button pill type="submit" style="margin-left: 20em; width:20em" > Advanced search </b-button>
+      </div>
+    </div>
+   
     </b-card-text>
+      </b-form>
   </b-card>
   </div>
 
   <div class="div-resault" v-if="showCars"> 
      <div v-for="item in items" :key="item"> 
-       <b-card img-src="https://www.strongcar.rs/pub/catalog/crop/skoda-superb-rent-a-car.jpg" 
-       alt="Card image" img-height="150px" img-width="150px" img-left class="mb-3" style="background-color:azure">
+       <b-card  class="shadow" img-src="https://www.strongcar.rs/pub/catalog/crop/skoda-superb-rent-a-car.jpg" 
+       alt="Card image" img-height="200px" img-width="250px" img-left  style="background-color:azure">
       <b-card-text>
         Information about the car.
       </b-card-text>
@@ -148,10 +147,12 @@
 
 
 <script>
+
+import NavBar from "../components/NavBar.vue";
 export default {
     name: "HomePage",
     components: {
-       
+       NavBar,
     },
     data() {
       const now = new Date();
@@ -166,7 +167,7 @@ export default {
             startDate: null,
             endDate: null,
             showError: false,
-            items: [{},{},{}],
+            items: [{}],
             showCars: false,
             brand: null,
             brands:[
@@ -174,13 +175,39 @@ export default {
                 { value: 1, text: "Audi"},
                 { value: 3, text: "Mercedes"},
                 { value: 4, text: "Tesla"},
-                { value: 5, text: "Opel"}
+                { value: 5, text: "Opel"},
+                { value: 6, text: "Alfa Romeo"},
+                { value: 7, text: "Chevrolet"},
+                { value: 8, text: "Ferrari"},
+                { value: 9, text: "Fiat"},
+                { value: 10, text: "Ford"},
+                { value: 11, text: "Hyundai"},
+                { value: 12, text: "Peugeot"},
+                { value: 13, text: "Toyota"},      
+            ],
+            model: null,
+            models:[
+                { value: 1, text: "BMW"},
+                { value: 1, text: "Audi"},
+                { value: 3, text: "Mercedes"},
+                { value: 4, text: "Tesla"},
+                { value: 5, text: "Opel"},
+                { value: 6, text: "Alfa Romeo"},
+                { value: 7, text: "Chevrolet"},
+                { value: 8, text: "Ferrari"},
+                { value: 9, text: "Fiat"},
+                { value: 10, text: "Ford"},
+                { value: 11, text: "Hyundai"},
+                { value: 12, text: "Peugeot"},
+                { value: 13, text: "Toyota"},
             ],
             fuelType: null,
             fuelTypes:[
                 { value: 1, text: "Petrol"},
                 { value: 1, text: "Gas"},
                 { value: 3, text: "Diesel"},
+                { value: 4, text: "Hybrid"},
+                { value: 5, text: "Electric"},
             ],
             gearshift: null,
            gearshifts:[
@@ -192,10 +219,11 @@ export default {
             classes: [
               { value: 1, text: "SUV"},
               { value: 2, text: "Old Timer"},
-              { value: 3, text: "City Car"},
+              { value: 3, text: "Saloon"},
               { value: 4, text: "Sports Car"},     
               { value: 5, text: "Station Vagon"},
-              { value: 5, text: "Van"}         
+              { value: 5, text: "Van"},
+              { value: 6, text: "Coupe"},       
             ],
             minPrice: null,
             maxPrice: null,
@@ -206,8 +234,23 @@ export default {
         }
     },
     methods: {
-      search1: function(){
+      search1: function()
+      {
         this.showCars = true;
+      },
+      search2: function()
+      {
+        this.showCars = true;
+      }
+    },
+    computed:{
+      formIsValid: function()
+      {
+          if(this.startDate!=null && this.endDate!=null)
+          {
+            return true;
+          }
+          else return false;
       }
     }
   
