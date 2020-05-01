@@ -6,6 +6,7 @@
 
       <b-collapse id="nav-collapse" is-nav>
             <b-navbar-nav class="ml-auto">
+              <b-nav-item href="/" link-classes="text-light"><b>Search</b></b-nav-item>
               <b-nav-item href="/newAd" link-classes="text-light"><b>Post Ad</b></b-nav-item>
             </b-navbar-nav>
       
