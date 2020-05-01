@@ -6,7 +6,7 @@
 
   <div class="div-search">
     <b-nav vertical >
-      <b-card  id="card" no-body  bg-variant="light" text-variant="dark" header-text-variant="dark" align="center" header-bg-variant="light" header="Find a car for you" >
+      <b-card class="mb-4"  id="card" no-body  bg-variant="light" text-variant="dark" header-text-variant="dark" align="center" header-bg-variant="light" header="Find a car for you" >
        <b-card-text class="div-filter-card">
           <b-form @submit.prevent="search1">
           <b-form-group  align="left" id="input-group-1" label="Location:" label-for="location">
@@ -19,7 +19,7 @@
             <b-form-datepicker :min="minDate" :max="maxDate" v-model="endDate" locale="en" placeholder="End date"></b-form-datepicker>
          </b-form-group>
          <b-button block pill  variant="outline-secondary" v-b-toggle.collapse-1 > More details </b-button>
-         <b-button v-b-tooltip.hover title=" You need to fill form fields" block type="submit" pill :disabled="formIsValid">Search</b-button>
+         <b-button v-b-tooltip.hover title=" You need to select date" block type="submit" pill :disabled="!formIsValid">Search</b-button>
          <p v-if="showError"   class="p-error">Error</p>
         </b-form>
         </b-card-text>
@@ -135,24 +135,29 @@
       </b-form-select>  
     </div>
 
-    <div v-for="item in items" :key="item"> 
+    <div v-for="item in items" :key="item.id"> 
        <b-card no-body class="overflow-hidden shadow mb-4 mt-2" header-bg-variant="warning">
           <template v-slot:header>
             <h2 class="sm-0 text-center"> {{item.brand}}  {{item.model}} </h2>
           </template>
           <b-row no-gutters>
             <b-col >
-              <b-card-img :src="item.image" alt="Image" class="rounded-0 mt-2 mb-2 ml-2 "></b-card-img>
+              <b-card-img :src="item.image" height="345" width="260" alt="Image" class="rounded-0 mt-2 mb-2 ml-2 "></b-card-img>
             </b-col>
             <b-col >
               <b-card-body>
                 <b-card-text>
-                  <b-row class="mt-1"> 
-                    <b-col col-3>
-                       <b-icon icon="star-fill"></b-icon>
-                        {{item.rate}}
+                  <b-row class="mt-1">
+                    <b-col>
+                        <b> Available from: </b> {{item.startDate}} <b> to </b> {{item.endDate}}
+                    </b-col>
+                  </b-row>
+                  <b-row class="mt-3"> 
+                    <b-col>
+                        <b> Rating: </b> {{item.rate}}
+                       <b-icon icon="star-fill"></b-icon>                       
                   </b-col>
-                  <b-col col-3>
+                  <b-col>
                         <b>Price:</b> {{item.price}} <b>€</b>
                     </b-col>
                   </b-row>   
@@ -182,12 +187,15 @@
               </b-row>     
               <b-row class="mt-3">
                   <b-col>
+                    <b>Location:</b> {{item.location}} 
+                  </b-col>
+                  <b-col>
                       <b>Collision Damage Waiver:</b> Yes
                   </b-col>
               </b-row>  
-               <hr >
+               <hr>
               <b-row>       
-                <b-button class="ml-auto mr-3" @click="reserveCar(item.id)">Reserve</b-button>
+                <b-button class="ml-auto mr-3" @click="details(item.id)">Details</b-button>
               </b-row>   
           </b-card-text>       
         </b-card-body>
@@ -313,7 +321,10 @@ export default {
           kilometerLimit: "Unlimited",
           childrenSeats: 0,
           cdw: true,
-          rate: 4.5
+          rate: 4.5,
+          location: "Novi Sad",
+          startDate: "05.05.2020.",
+          endDate: "05.05.2021."
         },
 
         {
@@ -330,7 +341,10 @@ export default {
           kilometerLimit: "Unlimited",
           childrenSeats: 0,
           cdw: true,
-          rate: 4.5
+          rate: 4.5,
+          location: "Novi Sad",
+          startDate: "05.05.2020.",
+          endDate: "05.05.2021."
         },
         {
           id: 3,
@@ -346,7 +360,10 @@ export default {
           kilometerLimit: "Unlimited",
           childrenSeats: 0,
           cdw: true,
-          rate: 4.5
+          rate: 4.5,
+          location: "Novi Sad",
+          startDate: "05.05.2020.",
+          endDate: "05.05.2021."
         },
       ],
         }
@@ -360,7 +377,7 @@ export default {
       {
         this.showCars = true;
       },
-      reserveCar: function(id)
+      details: function(id)
       {
         this.$router.push({ path: 'reserveCar', query: { id: id } });
       },
@@ -368,9 +385,9 @@ export default {
     computed:{
       formIsValid: function()
       {
-          if(this.startDate!=null && this.endDate!=null)
+          if(this.startDate!=null && this.endDate!=null && this.startDate <= this.endDate)
           {
-            return true;
+            return true;          
           }
           else return false;
       }
@@ -386,13 +403,6 @@ export default {
    top: -15px;
    left: -15px;
 }
-/*#base-div{
-  background-image: url('../assets/img3.jpg');
-  background-attachment: scroll;
-  background-size: cover;
-  height:100vh;
-}*/
-
   .div-search{
     width:20%;
     float:left;
@@ -405,11 +415,10 @@ export default {
 
   .div-resault{
     padding: 1em;
-    margin-left: 12em;
-    margin-right: 12em;
-    }
+    margin-left: 10em;
+    margin-right: 10em;
+  }
   
-
   #card{
     padding: 1em;
   }
