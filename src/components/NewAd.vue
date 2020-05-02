@@ -1,11 +1,12 @@
 <template>
     
     <div align="center">
-    <br><br><br>
-    <b-card
+      <NavBar/>
+    
+    <b-card class="my-4"
         style="max-width: 70rem; "
         border-variant="secondary"
-      
+        header-bg-variant="warning"
     >
         
         <template v-slot:header>
@@ -167,9 +168,12 @@
 
 <script>
 
-
+import NavBar from '../components/NavBar.vue'
 export default {
     name: 'NewAd',
+    components: {
+        NavBar
+    },
     data(){
         const now = new Date();
         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
