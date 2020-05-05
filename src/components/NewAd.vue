@@ -119,22 +119,11 @@
                             <b-col>
                                 <b-form-group  label-cols-lg="5" label-size="sm"  label="Price from:" >
                                      <b-input-group size="sm" append="€">
-                                        <b-form-input type="number" min="0" size="sm" placeholder="Minimal price" v-model="ad.minPrice"></b-form-input>
+                                        <b-form-input type="number" min="0" size="sm" placeholder="Set a price" v-model="ad.minPrice"></b-form-input>
                                     </b-input-group>
                                 </b-form-group>
                             </b-col>
                             <b-col>
-                                 <b-form-group  label-cols-lg="5" label-size="sm"  label="to:" >
-                                     <b-input-group size="sm" append="€">
-                                        <b-form-input type="number" min="0" size="sm" placeholder="Maximum price" v-model="ad.maxPrice"></b-form-input>
-                                    </b-input-group>
-                                </b-form-group>
-                            </b-col>
-                        </b-row>
-                        <b-row>
-                            <b-col>
-                            </b-col>
-                            <b-col md="6">
                                 <b-form-checkbox 
                                     id="checkbox-1"
                                     v-model="ad.androidApp"
@@ -143,9 +132,6 @@
                                     unchecked-value="not_accepted"
                                     >Android app present in the vehicle
                                 </b-form-checkbox>
-                               
-                            </b-col>
-                             <b-col>
                             </b-col>
                         </b-row>
                         <b-row>
