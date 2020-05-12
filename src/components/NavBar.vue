@@ -8,6 +8,7 @@
             <b-navbar-nav class="ml-auto">
               <b-nav-item href="/" link-classes="text-light"><b>Search</b></b-nav-item>
               <b-nav-item href="/newAd" link-classes="text-light"><b>Post Ad</b></b-nav-item>
+              <b-nav-item href="/statistic" link-classes="text-light"><b>Statistics</b></b-nav-item>
             </b-navbar-nav>
       
       <b-collapse id="nav-collapse" is-nav>
@@ -49,4 +50,5 @@ export default {
     text-decoration: none;
     color: #fff;
 }
+.router-link-active{ color: white;}
 </style>

@@ -5,6 +5,7 @@ import LoginPage from '../components/LoginPage.vue'
 import RegistrationPage from '../components/RegistrationPage.vue'
 import NewAd from '../components/NewAd.vue'
 import ReserveCar from '../components/ReserveCar.vue'
+import Statistic from '../components/Statistic.vue'
 
 Vue.use(Router)
 
@@ -35,6 +36,11 @@ export default new Router({
             path: '/reserveCar',
             name: 'ReserveCar',
             component: ReserveCar
+        },
+        {
+            path: '/statistic',
+            name: 'Statistic',
+            component: Statistic
         },
         {
             path: '*',
