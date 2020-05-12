@@ -73,7 +73,7 @@
           </b-form-group>
         </div>
         <div class="col">
-            <b-form-group label-cols="1" label-cols-lg="4" label-size="sm" label="Child Seats:" label-for="childSeats">
+            <b-form-group label-cols="1" label-cols-lg="4" label-size="sm" label="Children Seats:" label-for="childSeats">
               <b-form-input :min="0" :max="4" id="childSeats" size="sm" type="number" placeholder="Choose number" v-model="childSeats" ></b-form-input>
            </b-form-group>
         </div>
@@ -86,10 +86,10 @@
     </div> 
     <div class="containter mx-2 row">
         <div class="col">
-            <b-form-group label-cols="1" label-cols-lg="4" label-size="sm" label="Gearshift type:" label-for="gearshiftType">
-            <b-form-select id="gearshiftType" v-model="gearshift" :options="gearshifts">
+            <b-form-group label-cols="1" label-cols-lg="4" label-size="sm" label="Transmission type:" label-for="transmissionType">
+            <b-form-select id="transmissionType" v-model="gearshift" :options="gearshifts">
                 <template v-slot:first>
-                  <b-form-select-option :value="null">Select gearshift type</b-form-select-option>
+                  <b-form-select-option :value="null">Select transmission type</b-form-select-option>
                 </template>
               </b-form-select>  
           </b-form-group>
@@ -138,11 +138,11 @@
     <div v-for="item in items" :key="item.id"> 
        <b-card no-body class="overflow-hidden shadow mb-4 mt-2" header-bg-variant="warning">
           <template v-slot:header>
-            <h2 class="sm-0 text-center"> {{item.brand}}  {{item.model}} </h2>
+            <h2 class="sm-0 text-center"> {{item.car.carBrand.name}}  {{item.car.carModel.name}} </h2>
           </template>
           <b-row no-gutters>
             <b-col >
-              <b-card-img :src="item.image" height="345" width="260" alt="Image" class="rounded-0 mt-2 mb-2 ml-2 "></b-card-img>
+              <b-card-img :src="require('@/assets/audi_a8.jpeg')" height="345" width="260" alt="Image" class="rounded-0 mt-2 mb-2 ml-2 "> </b-card-img>
             </b-col>
             <b-col >
               <b-card-body>
@@ -154,43 +154,46 @@
                   </b-row>
                   <b-row class="mt-3"> 
                     <b-col>
-                        <b> Rating: </b> {{item.rate}}
+                        <b> Rating: </b> {{item.car.rate}}
                        <b-icon icon="star-fill"></b-icon>                       
                   </b-col>
                   <b-col>
-                        <b>Price:</b> {{item.price}} <b>€</b>
+                        <b>Price per day:</b> {{item.priceList.pricePerDay}} <b> € </b>
                     </b-col>
                   </b-row>   
                 <b-row class="mt-3">
                 <b-col>
-                  <b>Fuel type:</b> {{item.fuelType}}
+                  <b>Fuel type:</b> {{item.car.fuelType}}
                 </b-col>
                 <b-col>
-                  <b>Vehicle type:</b> {{item.vehicletype}}
+                  <b>Car class:</b> {{item.car.carClass}}
                 </b-col>
               </b-row>       
               <b-row class="mt-3">
                   <b-col>
-                    <b>Transmission:</b> {{item.transmission}}
+                    <b>Transmission:</b> {{item.car.transType}}
                   </b-col>
                   <b-col>
-                    <b>Children seats:</b> {{item.childrenSeats}}
+                    <b>Children seats:</b> {{item.car.childrenSeats}}
                   </b-col>
               </b-row> 
               <b-row class="mt-3">
                   <b-col>
-                    <b>Mileage:</b> {{item.mileage}} <b>km</b>
+                    <b>Mileage:</b> {{item.car.mileage}} <b>km</b>
                   </b-col>
                   <b-col>
-                    <b>Km limit:</b> {{item.kilometerLimit}}
+                    <b>Km limit:</b> {{item.limitKm}}
                   </b-col>
               </b-row>     
               <b-row class="mt-3">
-                  <b-col>
+                  <b-col >
                     <b>Location:</b> {{item.location}} 
                   </b-col>
                   <b-col>
-                      <b>Collision Damage Waiver:</b> Yes
+                    <b>Collision Damage Waiver: </b> {{ item.cdw == true ? 'Yes' : 'No' }}
+                   <!-- <b-row>
+                      <b>Collision Damage Waiver: </b> <p v-if="item.cdw">  Yes </p> <p v-if="!item.cdw">  No </p> 
+                    </b-row>-->
                   </b-col>
               </b-row>  
                <hr>
@@ -216,6 +219,9 @@
 <script>
 
 import NavBar from "../components/NavBar.vue";
+import axios from "axios";
+const baseUrl = "http://localhost:8080/api";
+
 export default {
     name: "HomePage",
     components: {
@@ -306,8 +312,8 @@ export default {
           { value: 'rateAsc', text: 'Rate ascending'},
           { value: 'rateDesc', text: 'Rate descending'},
         ],
-        items: [
-        {
+        items: [],
+        /*{
           id: 1,
           image:
             "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/2020-audi-a8-mmp-1-1573063953.jpeg?crop=0.704xw:1.00xh;0.208xw,0&resize=640:*",
@@ -364,14 +370,18 @@ export default {
           location: "Novi Sad",
           startDate: "05.05.2020.",
           endDate: "05.05.2021."
-        },
-      ],
+        },*/
+      
         }
     },
     methods: {
       search1: function()
       {
+        axios.get(baseUrl + "/ads").then(response => {
+          this.items = response.data;
+        });
         this.showCars = true;
+
       },
       search2: function()
       {
@@ -415,8 +425,8 @@ export default {
 
   .div-resault{
     padding: 1em;
-    margin-left: 10em;
-    margin-right: 10em;
+    margin-left: 8em;
+    margin-right: 8em;
   }
   
   #card{
