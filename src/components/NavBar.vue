@@ -6,9 +6,9 @@
 
       <b-collapse id="nav-collapse" is-nav>
             <b-navbar-nav class="ml-auto">
-              <b-nav-item href="/" link-classes="text-light"><b>Search</b></b-nav-item>
-              <b-nav-item href="/newAd" link-classes="text-light"><b>Post Ad</b></b-nav-item>
-              <b-nav-item href="/statistic" link-classes="text-light"><b>Statistics</b></b-nav-item>
+              <b-nav-item v-if="loggedIn" href="/" link-classes="text-light"><b>Search</b></b-nav-item>
+              <b-nav-item v-if="loggedIn" href="/newAd" link-classes="text-light"><b>Post Ad</b></b-nav-item>
+              <b-nav-item v-if="loggedIn" href="/statistic" link-classes="text-light"><b>Statistics</b></b-nav-item>
             </b-navbar-nav>
       
       <b-collapse id="nav-collapse" is-nav>
@@ -17,8 +17,9 @@
            <!--  <b-nav-item href="/cart">Cart</b-nav-item> -->
 
             <!--Za neregistrovane korisnike-->
-            <b-nav-item href="/login" link-classes="text-light"><b>Sign in</b></b-nav-item>
-            <b-nav-item href="/registration" link-classes="text-light"><b>Sign up</b></b-nav-item>
+            <!--<b-nav-item v-if="!loggedIn" href="/login" link-classes="text-light"><b>Sign in</b></b-nav-item>-->
+            <b-nav-item v-if="loggedIn" @click="logout()" link-classes="text-light"><b>Sign out</b></b-nav-item>
+            <!--<b-nav-item href="/registration" link-classes="text-light"><b>Sign up</b></b-nav-item>-->
             
 
             <!--Za sve ulogovane korisnike-->
@@ -39,7 +40,16 @@ export default {
         }
     },
     methods: {
-     //   logout: function() { }
+       logout: function() { 
+          this.$store.dispatch('destroyToken');
+          this.$router.push({'name': 'LoginPage'});
+          
+       }
+    },
+    computed: {
+      loggedIn(){
+        return this.$store.getters.loggedIn;
+      }
     }
 
 }

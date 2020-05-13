@@ -1,4 +1,6 @@
 <template>
+<div align="center">
+      <NavBar/>
   <div class="container marginTop">
     <b-row class="d-flex justify-content-center responsive">
       <b-col class="col-5 md=5">
@@ -9,12 +11,12 @@
               </h3>
             </div>
           <b-card-body>
-            <b-form>
+            <b-form @submit.prevent="login()">
               <b-input-group class="mb-4 mt-3">
                 <b-input-group-prepend is-text>
                   <b-icon icon="person-fill"></b-icon>
                 </b-input-group-prepend>
-                <b-form-input v-model="username" type="text" required placeholder="Your username"></b-form-input>
+                <b-form-input v-model="email" type="email" required placeholder="Your email"></b-form-input>
               </b-input-group>
               <b-input-group>
                 <b-input-group-prepend is-text>
@@ -22,28 +24,52 @@
                 </b-input-group-prepend>
                 <b-form-input v-model="password" type="password" required placeholder="Your password"></b-form-input>
               </b-input-group>
-              <b-button type="button" class="mt-4 mb-1 col-12">Sign in</b-button>
+              <b-button type="submit" class="mt-4 mb-1 col-12">Sign in</b-button>
+              <p class="error" v-if="errorLogin">Email or password is incorrect.</p>
             </b-form>
           </b-card-body>
-          <hr class="col-10">
+          <!--<hr class="col-10">
             <p class="font-small grey-text d-flex justify-content-end mr-4">
               Not a member?
               <a href="/registration" class="ml-1">Sign up</a>
-            </p>
+            </p>!-->
         </b-card>
       </b-col>
     </b-row>
   </div>
+</div>
 </template>
 
 <script>
+import NavBar from '../components/NavBar.vue'
 export default {
   name: 'LoginPage',
+  components: {
+        NavBar
+    },
   data() {
     return {
-      username: '',
+      email: '',
       password: '',
+      errorLogin: false
     }    
+  },
+  methods: {
+    login(){
+        this.$store.dispatch('retrieveToken',{
+          email: this.email,
+          password: this.password
+        })
+        .then(response => {
+          console.log(response);
+          this.$router.push({ name: 'HomePage'})
+        }).catch(error => {
+          if (error.response) {
+              this.errorLogin = true;
+              setTimeout(() => {this.errorLogin = false;}, 3500);
+          }
+          });
+    }
   }
 };
 </script>
@@ -57,5 +83,9 @@ export default {
 .shadow {
   -webkit-box-shadow: 5px 5px 5px 5px;
     box-shadow: 5px 5px 5px 5px;
+}
+
+.error{
+  color:red;
 }
 </style>
