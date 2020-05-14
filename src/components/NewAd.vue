@@ -41,12 +41,19 @@
                         <b-row>
                             <b-col>
                                 <b-form-group label-cols="1" label-cols-lg="3" label-size="sm" label="Brand:" >
-                                <b-form-input label-cols="1" size="sm" v-model="ad.brand"></b-form-input>
+                                <b-form-input label-cols="1" size="sm" v-model="ad.model.carBrand.name" disabled></b-form-input>
                                 </b-form-group>
                             </b-col>
                             <b-col>
-                                <b-form-group label-cols="1" label-cols-lg="3" label-size="sm" label="Model:" >
-                                <b-form-input label-cols="1" size="sm" v-model="ad.model"></b-form-input>
+                             
+                                 <b-form-group label-cols-lg="5" label-size="sm"  label="Model:" >
+                                    <b-form-select v-model="ad.model" size="sm">
+                                        <option v-for="(carModel,index) in carModels"
+                                            :key="index"
+                                            :value="carModel">
+                                            {{carModel.name}}
+                                    </option>
+                                    </b-form-select>
                                 </b-form-group>
                             </b-col>
                             <b-col>
@@ -117,10 +124,17 @@
                         </b-row>
                           <b-row>
                             <b-col>
-                                <b-form-group  label-cols-lg="5" label-size="sm"  label="Price from:" >
-                                     <b-input-group size="sm" append="€">
-                                        <b-form-input type="number" min="0" size="sm" placeholder="Set a price" v-model="ad.minPrice"></b-form-input>
-                                    </b-input-group>
+                                <b-form-group  label-cols-lg="5" label-size="sm"  label="Pricing list:" >
+                                    <b-form-select v-model="pricingListSelected" size="sm">
+                                        <template v-slot:first>
+                                            <b-form-select-option :value="{}">Choose the pricing</b-form-select-option>
+                                        </template>
+                                        <option v-for="(priceList,index) in priceLists"
+                                            :key="index"
+                                            :value="priceList">
+                                            {{priceList.alias}}
+                                    </option>
+                                    </b-form-select>
                                 </b-form-group>
                             </b-col>
                             <b-col>
@@ -137,13 +151,52 @@
                         <b-row>
                             <br/>
                         </b-row>
+                        <b-row >
+                            <b-col>
+                            <h3><u>Pricing</u></h3>
+                            <br>
+                            </b-col>
+                        </b-row>
+                        <b-row >
+                            <b-col>
+                                <b-form-group label-cols="1" label-cols-lg="5" label-size="sm" label="Price per km:" >
+                                    <b-input-group size="sm" append="€">
+                                    <b-form-input label-cols="1" size="sm" v-model="pricingListSelected.pricePerKm" disabled></b-form-input>
+                                    </b-input-group>
+                                </b-form-group>
+                            </b-col>
+                           <b-col>
+                                <b-form-group label-cols="1" label-cols-lg="5" label-size="sm" label="Price per day:" >
+                                    <b-input-group size="sm" append="€">
+                                    <b-form-input label-cols="1" size="sm" v-model="pricingListSelected.pricePerDay" disabled></b-form-input>
+                                    </b-input-group>
+                                </b-form-group>
+                            </b-col>
+                        </b-row>
+                         <b-row >
+                            <b-col>
+                                <b-form-group label-cols="1" label-cols-lg="5" label-size="sm" label="Discount 20 days:" >
+                                <b-input-group size="sm" append="%">
+                                    <b-form-input label-cols="1" size="sm" v-model="pricingListSelected.discount20Days" disabled></b-form-input>
+                                </b-input-group>
+                                </b-form-group>
+                            </b-col>
+                           <b-col>
+                                <b-form-group label-cols="1" label-cols-lg="5" label-size="sm" label="Discount 30 days:" >
+                                    <b-input-group size="sm" append="%">
+                                    <b-form-input label-cols="1" size="sm" v-model="pricingListSelected.discount30Days" disabled></b-form-input>
+                                    </b-input-group>
+                                </b-form-group>
+                            </b-col>
+                        </b-row>
                         <b-row>
                             <b-col>
-                                <b-button size="lg">
+                                <b-button @click="submitAd" size="lg">
                                     Submit
                                 </b-button>
                             </b-col>
                         </b-row>
+                        
                      </b-container>
                 </b-col>
             </b-row>
@@ -154,7 +207,9 @@
 
 <script>
 
-import NavBar from '../components/NavBar.vue'
+import NavBar from '../components/NavBar.vue';
+import axios from "axios";
+const baseUrl = "http://localhost:8080/api";
 export default {
     name: 'NewAd',
     components: {
@@ -171,35 +226,36 @@ export default {
              selectedClass: null,
              gearTypes:[
                 { value: null, text: 'Choose the gear' },
-                { value: 'Manual', text: 'Manual' },
-                { value: 'Automatic', text: 'Automatic' },
-                { value: 'Semi-automatic', text: 'Semi-automatic' },
-                { value: 'CVT', text: 'CVT' }
+                { value: 'MANUEL', text: 'Manual' },
+                { value: 'AUTOMATIC', text: 'Automatic' },
+                { value: 'SEMI_AUTOMATIC', text: 'Semi-automatic' }
              ],
              feulTypes:[
                  { value: null, text: 'Choose the feul' },
-                 { value: 'Gasoline', text: 'Gasoline' },
-                 { value: 'Diesel', text: 'Diesel' },
-                 { value: 'Hybridm', text: 'Hybrid' },
-                 { value: 'Petrol', text: 'Petrol' },
-                 { value: 'Electric', text: 'Electric' },
+                 { value: 'GAS', text: 'Gasoline' },
+                 { value: 'DIESEL', text: 'Diesel' },
+                 { value: 'HYBRID', text: 'Hybrid' },
+                 { value: 'PETROL', text: 'Petrol' },
+                 { value: 'ELECTRIC', text: 'Electric' },
              ],
              classes: [
                 { value: null, text: 'Choose the class' },
-                 { value: 'Microcar', text: 'Microcar' },
-                 { value: 'City car', text: 'City car' },
-                 { value: 'Supermini', text: 'Supermini' },
-                 { value: 'Small family', text: 'Small family' },
-                 { value: 'Large family', text: 'Large family' },
-                 { value: 'Executive', text: 'Executive' },
-                 { value: 'Luxury saloon', text: 'Luxury saloon' }
+                 { value: 'SUV', text: 'Sport utility vehicle' },
+                 { value: 'OLD_TIMER', text: 'Old timer' },
+                 { value: 'SALOON', text: 'Saloon' },
+                 { value: 'STATION_VAGON', text: 'Station vagon' },
+                 { value: 'SPORT_CAR', text: 'Sport car' },
+                 { value: 'VAN', text: 'Van' },
+                 { value: 'COUPE', text: 'Coupe' }
              ],
              image: "https://via.placeholder.com/200",
              images:[],
              currentImage:0,
              ad:{
-                brand:"",
-                model:"",
+                brand:{},
+                model:{
+                    carBrand:{}
+                },
                 class:null,
                 feulType:null,
                 gearType:null,
@@ -209,9 +265,12 @@ export default {
                 minDate:null,
                 maxDate:null,
                 minPrice:null,
-                maxPrice:null,
                 androidApp:"not_accepted"
-             }
+             },
+             carModels:[],
+             carId:null,
+             priceLists:[],
+             pricingListSelected:{}
              
         }
     },
@@ -237,9 +296,47 @@ export default {
         removeImage(){
             this.images.splice(this.currentImage,1);
             this.currentImage=this.currentImage-1;
+        },
+        submitAd(){
+            var cdwBool = false;
+            //var appBool =false;
+            if(this.ad.colision === 'accepted'){
+                cdwBool = true;
+            }
+            axios.post(baseUrl+'/ad',{
+                startDate: this.ad.minDate,
+                endDate: this.ad.maxDate,
+                limitKm: this.ad.limitKm,
+                cdw: cdwBool,
+                priceList:this.pricingListSelected,
+                car:{
+                    id:this.ad.carId,
+                    childrenSeats:this.ad.seatsChildren,
+                    mileage:this.ad.kmDriven,
+                    carModel: this.ad.model,
+                    carClass: this.ad.class,
+                    transType: this.ad.gearType,
+                    fuelType: this.ad.feulType
+
+
+                }
+            })
+            .then(response => {
+                this.carModels = response.data;
+            });
         }
         
-    }
+    },
+    mounted(){
+        axios.get(baseUrl+'/carModel')
+        .then(response => {
+            this.carModels = response.data;
+        });
+        axios.get(baseUrl+'/priceList')
+        .then(response => {
+            this.priceLists = response.data;
+        });
+    },
 }
 </script>
 
