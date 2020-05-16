@@ -31,11 +31,32 @@
                 </b-container>
                 </b-col>
                 <b-col>
+                    <b-form @submit.prevent="submitAd">
                     <b-container>
                         <b-row>
                             <b-col>
                             <h3><u>Main info</u></h3>
                             <br>
+                            </b-col>
+                        </b-row>
+                        <b-row>
+                            <b-col>
+                            </b-col>
+                            <b-col cols="6">
+                            <b-form-group label-cols-lg="4" label-size="sm"  label="Choose a car:" >
+                                    <b-form-select @change="chooseCar()" v-model="car" size="sm">
+                                        <template v-slot:first>
+                                            <b-form-select-option selected :value="null">New car</b-form-select-option>
+                                        </template>
+                                        <option v-for="(carSelected,index) in cars"
+                                            :key="index"
+                                            :value="carSelected">
+                                            {{carSelected.carModel.carBrand.name}} {{carSelected.carModel.name}}
+                                    </option>
+                                    </b-form-select>
+                                </b-form-group>
+                            </b-col>
+                            <b-col>
                             </b-col>
                         </b-row>
                         <b-row>
@@ -46,8 +67,8 @@
                             </b-col>
                             <b-col>
                              
-                                 <b-form-group label-cols-lg="5" label-size="sm"  label="Model:" >
-                                    <b-form-select v-model="ad.model" size="sm">
+                                 <b-form-group :disabled="carChosen" label-cols-lg="5" label-size="sm"  label="Model:" >
+                                    <b-form-select required v-model="ad.model" size="sm">
                                         <option v-for="(carModel,index) in carModels"
                                             :key="index"
                                             :value="carModel">
@@ -57,8 +78,8 @@
                                 </b-form-group>
                             </b-col>
                             <b-col>
-                                <b-form-group label-cols-lg="3" label-size="sm" label="Class:" >
-                                    <b-form-select v-model="ad.class" :options="classes" size="sm"></b-form-select>
+                                <b-form-group :disabled="carChosen" label-cols-lg="3" label-size="sm" label="Class:" >
+                                    <b-form-select required v-model="ad.class" :options="classes" size="sm"></b-form-select>
                                 </b-form-group>
                             </b-col>
                         </b-row>
@@ -71,37 +92,27 @@
                         <b-row>
                             <b-col>
                                 <b-form-group label-cols-lg="5" label-size="sm"  label="Feul type:" >
-                                    <b-form-select v-model="ad.feulType" :options="feulTypes" size="sm"></b-form-select>
+                                    <b-form-select required :disabled="carChosen" v-model="ad.fuelType" :options="fuelType" size="sm"></b-form-select>
                                 </b-form-group>
                             </b-col>
                             <b-col>
                                 <b-form-group label-cols-lg="5" label-size="sm" label="Gear type:" >
-                                 <b-form-select v-model="ad.gearType" :options="gearTypes" size="sm"></b-form-select>
-                                </b-form-group>
-                            </b-col>
-                            <b-col>
-                                <b-form-group label-cols-lg="3" label-size="sm" label="Seats for children:" >
-                                <b-form-input type="number" min="0" size="sm" placeholder="Number of seats" v-model="ad.seatsChildren"></b-form-input>
+                                 <b-form-select required :disabled="carChosen" v-model="ad.gearType" :options="gearTypes" size="sm"></b-form-select>
                                 </b-form-group>
                             </b-col>
                         </b-row>
                          <b-row>
                             <b-col>
                                  <b-form-group  label-cols-lg="5" label-size="sm" label="Kilometers driven:" >
-                                     <b-input-group size="sm" append="km">
-                                        <b-form-input type="number" min="0" size="sm" placeholder="Number of kilometers" v-model="ad.kmDriven"></b-form-input>
+                                     <b-input-group  size="sm" append="km">
+                                        <b-form-input required  :disabled="carChosen" type="number" min="0" size="sm" placeholder="Number of kilometers" v-model="ad.kmDriven"></b-form-input>
                                     </b-input-group>
                                 </b-form-group>
                             </b-col>
-                            <b-col>
-                                <b-form-checkbox 
-                                    v-model="ad.colision"
-                                    size="2sm"
-                                    value="accepted"
-                                    unchecked-value="not_accepted"
-                                    >Collision Damage Waiver
-                                </b-form-checkbox>
-                                
+                             <b-col>
+                                <b-form-group label-cols-lg="5" label-size="sm" label="Seats for children:" >
+                                <b-form-input required :disabled="carChosen" type="number" min="0" size="sm" placeholder="Number of seats" v-model="ad.seatsChildren"></b-form-input>
+                                </b-form-group>
                             </b-col>
                         </b-row>
                         <b-row>
@@ -113,29 +124,25 @@
                         <b-row>
                         <b-col>
                             <b-form-group label-cols-lg="5" label-size="sm"  label="Rentable from:" >
-                            <b-form-datepicker size="sm" :min="minDate" locale="en" placeholder="Start date"  v-model="ad.minDate"></b-form-datepicker>
+                            <b-form-datepicker required size="sm" :min="minDate" locale="en" placeholder="Start date"  v-model="ad.minDate"></b-form-datepicker>
                             </b-form-group>
                         </b-col>
                         <b-col>
                             <b-form-group label-cols-lg="5" label-size="sm" label="to:" >
-                            <b-form-datepicker size="sm" :min="minDate" locale="en" placeholder="End date" v-model="ad.maxDate"></b-form-datepicker>
+                            <b-form-datepicker required size="sm" :min="minDate" locale="en" placeholder="End date" v-model="ad.maxDate"></b-form-datepicker>
                             </b-form-group>
                         </b-col>
                         </b-row>
                           <b-row>
-                            <b-col>
-                                <b-form-group  label-cols-lg="5" label-size="sm"  label="Pricing list:" >
-                                    <b-form-select v-model="pricingListSelected" size="sm">
-                                        <template v-slot:first>
-                                            <b-form-select-option :value="{}">Choose the pricing</b-form-select-option>
-                                        </template>
-                                        <option v-for="(priceList,index) in priceLists"
-                                            :key="index"
-                                            :value="priceList">
-                                            {{priceList.alias}}
-                                    </option>
-                                    </b-form-select>
-                                </b-form-group>
+                               <b-col>
+                                <b-form-checkbox 
+                                    v-model="ad.colision"
+                                    size="2sm"
+                                    value="accepted"
+                                    unchecked-value="not_accepted"
+                                    >Collision Damage Waiver
+                                </b-form-checkbox>
+                                
                             </b-col>
                             <b-col>
                                 <b-form-checkbox 
@@ -155,6 +162,26 @@
                             <b-col>
                             <h3><u>Pricing</u></h3>
                             <br>
+                            </b-col>
+                        </b-row>
+                        <b-row>
+                            <b-col>
+                            </b-col>
+                            <b-col cols ="6">
+                                <b-form-group  label-cols-lg="4" label-size="sm"  label="Pricing list:" >
+                                    <b-form-select required v-model="pricingListSelected" size="sm">
+                                        <template v-slot:first>
+                                            <b-form-select-option :value="{}">Choose the pricing</b-form-select-option>
+                                        </template>
+                                        <option v-for="(priceList,index) in priceLists"
+                                            :key="index"
+                                            :value="priceList">
+                                            {{priceList.alias}}
+                                    </option>
+                                    </b-form-select>
+                                </b-form-group>
+                            </b-col>
+                            <b-col>
                             </b-col>
                         </b-row>
                         <b-row >
@@ -191,13 +218,14 @@
                         </b-row>
                         <b-row>
                             <b-col>
-                                <b-button @click="submitAd" size="lg">
+                                <b-button type="submit" size="lg">
                                     Submit
                                 </b-button>
                             </b-col>
                         </b-row>
                         
                      </b-container>
+                    </b-form>
                 </b-col>
             </b-row>
         </b-container>        
@@ -230,7 +258,7 @@ export default {
                 { value: 'AUTOMATIC', text: 'Automatic' },
                 { value: 'SEMI_AUTOMATIC', text: 'Semi-automatic' }
              ],
-             feulTypes:[
+             fuelType:[
                  { value: null, text: 'Choose the feul' },
                  { value: 'GAS', text: 'Gasoline' },
                  { value: 'DIESEL', text: 'Diesel' },
@@ -257,7 +285,7 @@ export default {
                     carBrand:{}
                 },
                 class:null,
-                feulType:null,
+                fuelType:null,
                 gearType:null,
                 seatsChildren:0,
                 kmDriven:0,
@@ -270,7 +298,11 @@ export default {
              carModels:[],
              carId:null,
              priceLists:[],
-             pricingListSelected:{}
+             pricingListSelected:{},
+             cars:[],
+             car:null,
+             carChosen:false
+
              
         }
     },
@@ -310,20 +342,91 @@ export default {
                 cdw: cdwBool,
                 priceList:this.pricingListSelected,
                 car:{
-                    id:this.ad.carId,
+                    id:this.carId,
                     childrenSeats:this.ad.seatsChildren,
                     mileage:this.ad.kmDriven,
                     carModel: this.ad.model,
                     carClass: this.ad.class,
                     transType: this.ad.gearType,
-                    fuelType: this.ad.feulType
+                    fuelType: this.ad.fuelType
 
 
                 }
             })
             .then(response => {
-                this.carModels = response.data;
+                this.selectedFeul=response;
+                this.$bvToast.toast('Ad posted for '+this.ad.model.carBrand.name + ' '+this.ad.model.name, {
+                title: `Succesfuly posted ad`,
+                variant: 'success',
+                solid: true
+                });
+                this.refreshForm();
+            })
+            .catch(error =>{
+                this.$bvToast.toast(error.response.data, {
+                title: 'Incorrect input',
+                variant: 'danger',
+                solid: true
+                });
             });
+        },
+        chooseCar(){
+            if(this.car === null){
+                this.car=null;
+                this.ad.model = {
+                    carBrand:{}
+                }
+                this.ad.class = null;
+                
+                this.ad.fuelType=null;
+                this.ad.gearType = null;
+                this.ad.seatsChildren = 0;
+                this.carId = null;
+                this.ad.kmDriven = 0;
+                this.ad.colision = "not_accepted";
+                this.carChosen=false;
+                
+            }else{
+                this.ad.model = this.car.carModel;
+                this.ad.class = this.car.carClass;
+                
+                this.ad.fuelType=this.car.fuelType;
+                this.ad.gearType = this.car.transType;
+                this.ad.seatsChildren = this.car.childrenSeats
+                this.carId = this.car.id;
+                this.ad.kmDriven = this.car.mileage;
+
+                if(this.car.cdw == true){
+                    this.ad.colision = "accepted"
+                }else{
+                    this.ad.colision = "not_accepted"
+                }
+                this.carChosen=true;
+            }
+        },
+        refreshForm(){
+            this.car = null;
+            this.carChosen= false;
+            this.ad.model = {
+                    carBrand:{}
+                }
+            this.ad.class= null;
+            this.ad.fuelType = null;
+            this.ad.gearType = null;
+            this.ad.seatsChildren = 0;
+            this.ad.kmDriven = 0;
+            this.ad.colision="not_accepted";
+            this.ad.minDate=null;
+            this.ad.maxDate=null;
+            this.ad.minPrice=null;
+            this.ad.androidApp="not_accepted";
+            this.pricingListSelected={};
+            
+            axios.get(baseUrl+'/car')
+            .then(response => {
+                this.cars = response.data;
+            });
+                
         }
         
     },
@@ -335,6 +438,10 @@ export default {
         axios.get(baseUrl+'/priceList')
         .then(response => {
             this.priceLists = response.data;
+        });
+        axios.get(baseUrl+'/car')
+        .then(response => {
+            this.cars = response.data;
         });
     },
 }
