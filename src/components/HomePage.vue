@@ -142,7 +142,7 @@
           </template>
           <b-row no-gutters>
             <b-col >
-              <b-card-img :src="require('@/assets/audi_a8.jpeg')" height="345" width="260" alt="Image" class="rounded-0 mt-2 mb-2 ml-2 "> </b-card-img>
+              <b-card-img :src="require('@/assets/audi_a8.jpeg')"  alt="Image" class="rounded-0 mt-2 mb-2 ml-2 "> </b-card-img>
             </b-col>
             <b-col >
               <b-card-body>
@@ -191,9 +191,6 @@
                   </b-col>
                   <b-col>
                     <b>Collision Damage Waiver: </b> {{ item.cdw == true ? 'Yes' : 'No' }}
-                   <!-- <b-row>
-                      <b>Collision Damage Waiver: </b> <p v-if="item.cdw">  Yes </p> <p v-if="!item.cdw">  No </p> 
-                    </b-row>-->
                   </b-col>
               </b-row>  
                <hr>
@@ -425,8 +422,8 @@ export default {
 
   .div-resault{
     padding: 1em;
-    margin-left: 8em;
-    margin-right: 8em;
+    margin-left: 7em;
+    margin-right: 7em;
   }
   
   #card{
