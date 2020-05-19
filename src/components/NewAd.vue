@@ -2,7 +2,6 @@
     
     <div align="center">
       <NavBar/>
-    
     <b-card class="my-4"
         style="max-width: 70rem; "
         border-variant="secondary"
@@ -24,8 +23,8 @@
                             </b-carousel-slide>
                         </b-carousel>
                         <b-button-group class="mt-3">
-                            <b-button style="width:100px; height:50px" size="sm" @click="$refs.file.click()" >Add an image</b-button>
-                            <b-button style="width:100px; height:50px" size="sm" @click="removeImage()" variant="dark" >Remove image</b-button>
+                            <b-button :disabled="carChosen" style="width:100px; height:50px" size="sm" @click="$refs.file.click()" >Add an image</b-button>
+                            <b-button :disabled="carChosen" style="width:100px; height:50px" size="sm" @click="removeImage()" variant="dark" >Remove image</b-button>
                         </b-button-group>
                     </b-row>
                 </b-container>
@@ -40,8 +39,6 @@
                             </b-col>
                         </b-row>
                         <b-row>
-                            <b-col>
-                            </b-col>
                             <b-col cols="6">
                             <b-form-group label-cols-lg="4" label-size="sm"  label="Choose a car:" >
                                     <b-form-select @change="chooseCar()" v-model="car" size="sm">
@@ -57,6 +54,11 @@
                                 </b-form-group>
                             </b-col>
                             <b-col>
+                                <b-form-group  label-cols-lg="5" label-size="sm" label="Location:" >
+                                     <b-input-group  size="sm">
+                                        <b-form-input required  type="text" size="sm" placeholder="Enter a location" v-model="ad.location"></b-form-input>
+                                    </b-input-group>
+                                </b-form-group>
                             </b-col>
                         </b-row>
                         <b-row>
@@ -254,27 +256,27 @@ export default {
              selectedClass: null,
              gearTypes:[
                 { value: null, text: 'Choose the gear' },
-                { value: 'MANUEL', text: 'Manual' },
-                { value: 'AUTOMATIC', text: 'Automatic' },
-                { value: 'SEMI_AUTOMATIC', text: 'Semi-automatic' }
+                { value: 'Manuel', text: 'Manual' },
+                { value: 'Automatic', text: 'Automatic' },
+                { value: 'Semi_automatic', text: 'Semi-automatic' }
              ],
              fuelType:[
                  { value: null, text: 'Choose the feul' },
-                 { value: 'GAS', text: 'Gasoline' },
-                 { value: 'DIESEL', text: 'Diesel' },
-                 { value: 'HYBRID', text: 'Hybrid' },
-                 { value: 'PETROL', text: 'Petrol' },
-                 { value: 'ELECTRIC', text: 'Electric' },
+                 { value: 'Gas', text: 'Gasoline' },
+                 { value: 'Diesel', text: 'Diesel' },
+                 { value: 'Hybrid', text: 'Hybrid' },
+                 { value: 'Petrol', text: 'Petrol' },
+                 { value: 'Electric', text: 'Electric' },
              ],
              classes: [
                 { value: null, text: 'Choose the class' },
-                 { value: 'SUV', text: 'Sport utility vehicle' },
-                 { value: 'OLD_TIMER', text: 'Old timer' },
-                 { value: 'SALOON', text: 'Saloon' },
-                 { value: 'STATION_VAGON', text: 'Station vagon' },
-                 { value: 'SPORT_CAR', text: 'Sport car' },
-                 { value: 'VAN', text: 'Van' },
-                 { value: 'COUPE', text: 'Coupe' }
+                 { value: 'Suv', text: 'Sport utility vehicle' },
+                 { value: 'Old_timer', text: 'Old timer' },
+                 { value: 'Saloon', text: 'Saloon' },
+                 { value: 'Station_vagon', text: 'Station vagon' },
+                 { value: 'Sport_car', text: 'Sport car' },
+                 { value: 'Van', text: 'Van' },
+                 { value: 'Coupe', text: 'Coupe' }
              ],
              image: "https://via.placeholder.com/200",
              images:[],
@@ -293,7 +295,8 @@ export default {
                 minDate:null,
                 maxDate:null,
                 minPrice:null,
-                androidApp:"not_accepted"
+                androidApp:"not_accepted",
+                location:null
              },
              carModels:[],
              carId:null,
@@ -331,9 +334,12 @@ export default {
         },
         submitAd(){
             var cdwBool = false;
-            //var appBool =false;
+            var appBool =false;
             if(this.ad.colision === 'accepted'){
                 cdwBool = true;
+            }
+             if(this.ad.androidApp === 'accepted'){
+                appBool = true;
             }
             axios.post(baseUrl+'/ad',{
                 startDate: this.ad.minDate,
@@ -341,6 +347,7 @@ export default {
                 limitKm: this.ad.limitKm,
                 cdw: cdwBool,
                 priceList:this.pricingListSelected,
+                location:this.ad.location, 
                 car:{
                     id:this.carId,
                     childrenSeats:this.ad.seatsChildren,
@@ -348,7 +355,9 @@ export default {
                     carModel: this.ad.model,
                     carClass: this.ad.class,
                     transType: this.ad.gearType,
-                    fuelType: this.ad.fuelType
+                    fuelType: this.ad.fuelType,
+                    hasAndroidApp: appBool,
+                    photos64: this.images
 
 
                 }
@@ -384,7 +393,8 @@ export default {
                 this.carId = null;
                 this.ad.kmDriven = 0;
                 this.ad.colision = "not_accepted";
-                this.carChosen=false;
+                this.ad.location = null;
+                this.images=[];
                 
             }else{
                 this.ad.model = this.car.carModel;
@@ -402,6 +412,11 @@ export default {
                     this.ad.colision = "not_accepted"
                 }
                 this.carChosen=true;
+                this.images = this.car.photos64;
+                // axios.get(baseUrl+'/car/'+this.carId+'/photo')
+                // .then(response => {
+                //     this.images = response.data;
+                // });
             }
         },
         refreshForm(){
@@ -421,7 +436,9 @@ export default {
             this.ad.minPrice=null;
             this.ad.androidApp="not_accepted";
             this.pricingListSelected={};
-            
+            this.carChosen=false;
+            this.ad.location = null;
+            this.images= [];
             axios.get(baseUrl+'/car')
             .then(response => {
                 this.cars = response.data;
