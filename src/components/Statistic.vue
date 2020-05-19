@@ -5,14 +5,14 @@
     <h1 style="font-size:3em" align="Center">Statistics</h1>
     <br/>
      <b-card-group style="margin:20px" deck>
-    <b-card  header-bg-variant="warning" :title="carTitle(kmDrivenCar.brand,kmDrivenCar.model)">
+    <b-card  header-bg-variant="warning" :title="carTitle(kmDrivenCar.carModel.carBrand.name,kmDrivenCar.carModel.name)">
         <template bg-variant="warning" v-slot:header>
             <h2 class="mb-0">Most kilometers driven</h2>
             <br/>
-            <h3>{{kmDrivenCar.kmDriven}} km</h3>
+            <h3>{{kmDrivenCar.mileage}} km</h3>
         </template> 
-        <b-carousel style="width:300px; height:200px" ref="imageCarousel" v-model="currentImage" controls interval=100000>
-            <b-carousel-slide style="width:300px; height:300px" v-for="img in kmDrivenCar.images" :key="img" :img-src="img">
+        <b-carousel style="width:300px; height:250px"  ref="imageCarousel" v-model="currentImage" controls interval=100000>
+            <b-carousel-slide style="width:300px; height:250px"  v-for="img in kmDrivenCar.photos64" :key="img" :img-src="img">
             </b-carousel-slide>
         </b-carousel>
       <b-container style="font-size: 20px">
@@ -21,7 +21,7 @@
                   Class: 
               </b-col>
               <b-col>
-                  {{kmDrivenCar.class}}
+                  {{kmDrivenCar.carClass}}
               </b-col>
           </b-row>
           <b-row>
@@ -29,7 +29,7 @@
                   Feul Type: 
               </b-col>
               <b-col>
-                  {{kmDrivenCar.feulType}}
+                  {{kmDrivenCar.fuelType}}
               </b-col>
           </b-row>
           <b-row>
@@ -37,7 +37,7 @@
                   Gear Type: 
               </b-col>
               <b-col>
-                  {{kmDrivenCar.gearType}}
+                  {{kmDrivenCar.transType}}
               </b-col>
           </b-row>
             <b-row>
@@ -45,7 +45,7 @@
                   Driven:
               </b-col>
               <b-col>
-                  {{kmDrivenCar.kmDriven}} km
+                  {{kmDrivenCar.mileage}} km
               </b-col>
           </b-row>
           <b-row>
@@ -53,7 +53,7 @@
                   Comments:
               </b-col>
               <b-col>
-                  {{kmDrivenCar.numberofComments}}
+                  {{kmDrivenCar.numberOfComments}}
               </b-col>
           </b-row>
           <b-row>
@@ -61,20 +61,20 @@
                   <b-icon icon="star-fill"></b-icon> 
               </b-col>
               <b-col>
-                  {{kmDrivenCar.score}}
+                  {{kmDrivenCar.rate}}
               </b-col>
           </b-row>
       </b-container>
     </b-card>
 
-    <b-card  header-bg-variant="warning" :title="carTitle(mostCommentsCar.brand,mostCommentsCar.model)" img-top>
+    <b-card  header-bg-variant="warning" :title="carTitle(mostCommentsCar.carModel.carBrand.name,mostCommentsCar.carModel.name)" img-top>
         <template v-slot:header>
             <h2 class="mb-0">Most comments</h2>
             <br/>
-            <h3>{{mostCommentsCar.numberofComments}} comments</h3>
+            <h3>{{mostCommentsCar.numberOfComments}} comments</h3>
         </template>  
-        <b-carousel style="width:300px; height:200px" ref="imageCarousel" v-model="currentImage" controls interval=100000>
-            <b-carousel-slide v-for="img in mostCommentsCar.images" :key="img" :img-src="img">
+        <b-carousel style="width:300px; height:250px" ref="imageCarousel" v-model="currentImage" controls interval=100000>
+            <b-carousel-slide style="width:300px; height:250px" v-for="img in mostCommentsCar.photos64" :key="img" :img-src="img">
             </b-carousel-slide>
         </b-carousel>
       <b-container style="font-size: 20px">
@@ -83,7 +83,7 @@
                   Class: 
               </b-col>
               <b-col>
-                  {{mostCommentsCar.class}}
+                  {{mostCommentsCar.carClass}}
               </b-col>
           </b-row>
           <b-row>
@@ -91,7 +91,7 @@
                   Feul Type: 
               </b-col>
               <b-col>
-                  {{mostCommentsCar.feulType}}
+                  {{mostCommentsCar.fuelType}}
               </b-col>
           </b-row>
           <b-row>
@@ -99,7 +99,7 @@
                   Gear Type: 
               </b-col>
               <b-col>
-                  {{mostCommentsCar.gearType}}
+                  {{mostCommentsCar.transType}}
               </b-col>
           </b-row>
           <b-row>
@@ -107,7 +107,7 @@
                   Driven:
               </b-col>
               <b-col>
-                  {{mostCommentsCar.kmDriven}} km
+                  {{mostCommentsCar.mileage}} km
               </b-col>
           </b-row>
           <b-row>
@@ -115,7 +115,7 @@
                   Comments:
               </b-col>
               <b-col>
-                  {{mostCommentsCar.numberofComments}}
+                  {{mostCommentsCar.numberOfComments}}
               </b-col>
           </b-row>
           <b-row>
@@ -123,20 +123,20 @@
                   <b-icon icon="star-fill"></b-icon> 
               </b-col>
               <b-col>
-                  {{mostCommentsCar.score}}
+                  {{mostCommentsCar.rate}}
               </b-col>
           </b-row>
       </b-container>
     </b-card>
 
-    <b-card  header-bg-variant="warning" :title="carTitle(bestScoreCar.brand,bestScoreCar.model)"  img-top>
+    <b-card  header-bg-variant="warning" :title="carTitle(bestScoreCar.carModel.carBrand.name ,bestScoreCar.carModel.name)"  img-top>
     <template v-slot:header>
             <h2 class="mb-0">Best score</h2>
             <br/>
-            <h3><b-icon icon="star-fill"></b-icon> {{bestScoreCar.score}}</h3>
+            <h3><b-icon icon="star-fill"></b-icon> {{bestScoreCar.rate}}</h3>
         </template>  
-       <b-carousel style="width:300px; height:200px" ref="imageCarousel" v-model="currentImage" controls interval=100000>
-            <b-carousel-slide style="width:300px; height:200px" v-for="img in bestScoreCar.images" :key="img" :img-src="img">
+       <b-carousel style="width:300px; height:250px"  ref="imageCarousel" v-model="currentImage" controls interval=100000>
+            <b-carousel-slide style="width:300px; height:250px"  v-for="img in bestScoreCar.photos64" :key="img" :img-src="img">
             </b-carousel-slide>
         </b-carousel>
       <b-container style="font-size: 20px">
@@ -145,7 +145,7 @@
                   Class: 
               </b-col>
               <b-col>
-                  {{bestScoreCar.class}}
+                  {{bestScoreCar.carClass}}
               </b-col>
           </b-row>
           <b-row>
@@ -153,7 +153,7 @@
                   Feul Type: 
               </b-col>
               <b-col>
-                  {{bestScoreCar.feulType}}
+                  {{bestScoreCar.fuelType}}
               </b-col>
           </b-row>
           <b-row>
@@ -161,7 +161,7 @@
                   Gear Type: 
               </b-col>
               <b-col>
-                  {{bestScoreCar.gearType}}
+                  {{bestScoreCar.transType}}
               </b-col>
           </b-row>
           <b-row>
@@ -169,7 +169,7 @@
                   Driven:
               </b-col>
               <b-col>
-                  {{bestScoreCar.kmDriven}} km
+                  {{bestScoreCar.mileage}} km
               </b-col>
           </b-row>
           <b-row>
@@ -177,7 +177,7 @@
                   Comments:
               </b-col>
               <b-col>
-                  {{bestScoreCar.numberofComments}}
+                  {{bestScoreCar.numberOfComments}}
               </b-col>
           </b-row>
           <b-row>
@@ -185,7 +185,7 @@
                   <b-icon icon="star-fill"></b-icon> 
               </b-col>
               <b-col>
-                  {{bestScoreCar.score}}
+                  {{bestScoreCar.rate}}
               </b-col>
           </b-row>
       </b-container>
@@ -194,7 +194,10 @@
     </div>
 </template>
 <script>
+
 import NavBar from '../components/NavBar.vue'
+import axios from "axios";
+const baseUrl = "http://localhost:8080/api";
 export default {
     name: 'Statistic',
     components: {
@@ -203,40 +206,43 @@ export default {
     data(){
         return{
             kmDrivenCar:{
-                images:['https://autorepublika.com/wp-content/uploads/2019/07/BMW-X6.jpg'],
-                brand:"BMW",
-                model:"x6",
-                class:'Class',
-                feulType:'Diesel',
-                gearType:'Automatic',
-                seatsChildren:0,
-                kmDriven:100000,
-                numberofComments:0,
-                score:4
+                photos64:['https://images3.polovniautomobili.tv/user-images/thumbs/1358/13586411/1e33091352d0-800x600.jpg'],
+                model:{
+                    carBrand:{}
+                },
+                carClass:{},
+                fuelType:'Diesel',
+                transType:'Automatic',
+                childrenSeats:0,
+                mileage:50000,
+                numberOfComments:10,
+                rate:5
              },
              mostCommentsCar:{
-                images:['https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Yugo_Koral_in_Serbia.jpg/369px-Yugo_Koral_in_Serbia.jpg'],
-                brand:"Yugo",
-                model:"45",
-                class:'Class',
-                feulType:'Diesel',
-                gearType:'Automatic',
-                seatsChildren:0,
-                kmDriven:20000, 
-                numberofComments:50,
-                score:3.6
+                photos64:['https://images3.polovniautomobili.tv/user-images/thumbs/1358/13586411/1e33091352d0-800x600.jpg'],
+                model:{
+                    carBrand:{}
+                },
+                carClass:{},
+                fuelType:'Diesel',
+                transType:'Automatic',
+                childrenSeats:0,
+                mileage:50000,
+                numberOfComments:10,
+                rate:5
              },
              bestScoreCar:{
-                images:['https://images3.polovniautomobili.tv/user-images/thumbs/1358/13586411/1e33091352d0-800x600.jpg'],
-                brand:"Skoda",
-                model:"Fabia",
-                class:'Class',
-                feulType:'Diesel',
-                gearType:'Automatic',
-                seatsChildren:0,
-                kmDriven:50000,
-                numberofComments:10,
-                score:5
+                photos64:['https://images3.polovniautomobili.tv/user-images/thumbs/1358/13586411/1e33091352d0-800x600.jpg'],
+                model:{
+                    carBrand:{}
+                },
+                carClass:{},
+                fuelType:'Diesel',
+                transType:'Automatic',
+                childrenSeats:0,
+                mileage:50000,
+                numberOfComments:10,
+                rate:5
              }
         }
     },
@@ -244,6 +250,20 @@ export default {
         carTitle(brand,model){
             return brand+" "+model
         }
+    },
+    mounted(){
+        axios.get(baseUrl+'/car/bestScore')
+        .then(response => {
+            this.bestScoreCar = response.data;
+        });
+        axios.get(baseUrl+'/car/mostComments')
+        .then(response => {
+            this.mostCommentsCar = response.data;
+        });
+        axios.get(baseUrl+'/car/mostKilometers')
+        .then(response => {
+            this.kmDrivenCar = response.data;
+        });
     }
 }
 </script>
