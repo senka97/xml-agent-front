@@ -149,7 +149,7 @@
                 <b-card-text>
                   <b-row class="mt-1">
                     <b-col>
-                        <b> Available from: </b> {{item.startDate}} <b> to </b> {{item.endDate}}
+                        <b> Available from: </b> {{format_date(item.startDate)}} <b> to </b> {{format_date(item.endDate)}}
                     </b-col>
                   </b-row>
                   <b-row class="mt-3"> 
@@ -217,6 +217,7 @@
 
 import NavBar from "../components/NavBar.vue";
 import axios from "axios";
+import moment from 'moment';
 const baseUrl = "http://localhost:8080/api";
 
 export default {
@@ -387,6 +388,11 @@ export default {
       details: function(id)
       {
         this.$router.push({ path: 'reserveCar', query: { id: id } });
+      },
+      format_date(value){
+         if (value) {
+           return moment(String(value)).format('DD-MMM-YYYY')
+          }
       },
     },
     computed:{
