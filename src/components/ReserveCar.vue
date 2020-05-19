@@ -15,7 +15,7 @@
             <b-col >
             <!-- <b-card-img :src="require('@/assets/audi_a8.jpeg')" alt="Image"  class="rounded-0 "></b-card-img>-->
              <b-carousel ref="myCarousel" v-model="currentImage" controls indicators  class="mt-3 mr-5 carousel-custom shadow" >
-                <b-carousel-slide  v-for="img in images" :key="img" :img-src="img"></b-carousel-slide>
+                <b-carousel-slide  v-for="img in item.car.photos64" :key="img" :img-src="img"></b-carousel-slide>
              </b-carousel>
             </b-col>
             

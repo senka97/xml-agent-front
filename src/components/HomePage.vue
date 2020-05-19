@@ -142,7 +142,7 @@
           </template>
           <b-row no-gutters>
             <b-col >
-              <b-card-img :src="require('@/assets/audi_a8.jpeg')"  alt="Image" class="rounded-0 mt-2 mb-2 ml-2 "> </b-card-img>
+              <b-card-img :src="item.car.photos64[0]"  alt="Image" class="rounded-0 mt-2 mb-2 ml-2 "> </b-card-img>
             </b-col>
             <b-col >
               <b-card-body>
