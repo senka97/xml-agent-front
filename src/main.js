@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router';
 import { store } from './store/store'
+import Notifications from 'vue-notification'
 import axios from 'axios';
 import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue';
 import {
@@ -29,6 +30,7 @@ Vue.component("ValidationProvider", ValidationProvider);
 
 Vue.use(BootstrapVue);
 Vue.use(BootstrapVueIcons);
+Vue.use(Notifications)
 
 Vue.use(require('vue-moment'));
 
