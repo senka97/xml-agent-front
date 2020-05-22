@@ -8,18 +8,18 @@
     <b-nav vertical >
       <b-card class="mb-4"  id="card" no-body  bg-variant="light" text-variant="dark" header-text-variant="dark" align="center" header-bg-variant="light" header="Find a car for you" >
        <b-card-text class="div-filter-card">
-          <b-form @submit.prevent="search1">
-          <b-form-group  align="left" id="input-group-1" label="Location:" label-for="location">
-           <b-form-input class="col-12" id="location" v-model="location" type="text" required placeholder="Enter location"></b-form-input>
+          <b-form @submit.prevent="search()">
+          <b-form-group  align="left" id="input-group-1" label="Location:" label-for="location" :invalid-feedback="invalidFeedbackLocation" :valid-feedback="validFeedbackLocation" :state="stateLocation">
+           <b-form-input class="col-12" id="location" v-model.trim="location" type="text" required placeholder="Enter a city"></b-form-input>
          </b-form-group>
          <b-form-group  align="left" id="input-group-2" label="Start date: (it has to be 48h from now)" label-for="startDate">
-              <b-form-datepicker :min="minDate" v-model="startDate" locale="en" placeholder="Start date"></b-form-datepicker>
+              <b-form-datepicker :min="minDate" v-model="startDate" locale="en" required placeholder="Start date"></b-form-datepicker>
          </b-form-group>   
          <b-form-group  align="left" id="input-group-3" label="End date:" label-for="endDate" > 
-            <b-form-datepicker :min="minDate" :max="maxDate" v-model="endDate" locale="en" placeholder="End date"></b-form-datepicker>
+            <b-form-datepicker :min="minDate" :max="maxDate" v-model="endDate" locale="en" required placeholder="End date"></b-form-datepicker>
          </b-form-group>
-         <b-button block pill  variant="outline-secondary" v-b-toggle.collapse-1 > More details </b-button>
-         <b-button v-b-tooltip.hover title=" You need to select date" block type="submit" pill :disabled="!formIsValid">Search</b-button>
+         <b-button @click="moreDetails()" block pill  variant="outline-secondary" v-b-toggle.collapse-1 > More details </b-button>
+         <b-button v-b-tooltip.hover title=" You need to enter location and select valid dates." block type="submit" pill :disabled="!formIsValid">Search</b-button>
          <p v-if="showError"   class="p-error">Error</p>
         </b-form>
         </b-card-text>
@@ -30,7 +30,7 @@
  <div class="div-filter">
    <b-collapse id="collapse-1" >
      <b-card  id="card" no-body bg-variant="light" text-variant="dark" >
-        <b-form @submit.prevent="search2">
+      <b-form>
     <b-card-text class="div-filter-card">
       <div class="containter mx-2 row">
         <div class="col">
@@ -73,13 +73,13 @@
           </b-form-group>
         </div>
         <div class="col">
-            <b-form-group label-cols="1" label-cols-lg="4" label-size="sm" label="Children Seats:" label-for="childSeats">
-              <b-form-input :min="0" :max="4" id="childSeats" size="sm" type="number" placeholder="Choose number" v-model="childSeats" ></b-form-input>
+            <b-form-group label-cols="1" label-cols-lg="4" label-size="sm" label="Children Seats:" label-for="childSeats" :invalid-feedback="invalidFeedbackSeats" :valid-feedback="validFeedbackSeats" :state="stateSeats">
+              <b-form-input id="childSeats" size="sm" type="text" placeholder="Enter a number" v-model="childSeats" ></b-form-input>
            </b-form-group>
         </div>
         <div class="col">
-            <b-form-group label-cols="1" label-cols-lg="4" label-size="sm" label="Mileage:" label-for="mileage">
-            <b-form-input id="mileage" :min="0" type="number" placeholder="Choose number" size="sm" v-model="mileage"></b-form-input>
+            <b-form-group label-cols="1" label-cols-lg="4" label-size="sm" label="Mileage:" label-for="mileage" :invalid-feedback="invalidFeedbackMileage" :valid-feedback="validFeedbackMileage" :state="stateMileage">
+            <b-form-input id="mileage" type="text" placeholder="Enter a number" size="sm" v-model="mileage"></b-form-input>
            </b-form-group>
         </div>
         
@@ -97,27 +97,28 @@
         <div class="col">
           <div class="row">
             <div class="col"> 
-                <b-form-group label-cols="4" label-size="sm" label="Price:" label-for="minPrice">
-                  <b-form-input :min="0"  type="number" id="minPrice" size="sm" placeholder="Min" v-model="minPrice"></b-form-input>
+                <b-form-group label-cols="4" label-size="sm" label="Price:" label-for="minPrice" :invalid-feedback="invalidFeedbackMinPrice" :valid-feedback="validFeedbackMinPrice" :state="stateMinPrice">
+                  <b-form-input   type="text" id="minPrice" size="sm" placeholder="Min" v-model="minPrice"></b-form-input>
                 </b-form-group>
             </div>
             <div class="col"> 
-              <b-form-group label-cols="4" label-size="sm" label="Price:" label-for="maxPrice">
-                  <b-form-input :min="0" type="number" id="maxPrice" size="sm" placeholder="Max" v-model="maxPrice"></b-form-input>
+              <b-form-group label-cols="4" label-size="sm" label="Price:" label-for="maxPrice" :invalid-feedback="invalidFeedbackMaxPrice" :valid-feedback="validFeedbackMaxPrice" :state="stateMaxPrice">
+                  <b-form-input  type="text" id="maxPrice" size="sm" placeholder="Max" v-model="maxPrice"></b-form-input>
                 </b-form-group>
             </div>
           </div>
         </div>
         <div class="col">
-            <b-form-group label-cols="1" label-cols-lg="4" label-size="sm" label="Planned mileage:" label-for="plannedMileage">
-            <b-form-input id="plannedMileage" :min="0" type="number" placeholder="Unlimited" size="sm" v-model="plannedMileage"></b-form-input>
+            <b-form-group label-cols="1" label-cols-lg="4" label-size="sm" label="Planned mileage:" label-for="plannedMileage" :invalid-feedback="invalidFeedbackPlannedMileage" :valid-feedback="validFeedbackPlannedMileage" :state="statePlannedMileage">
+            <b-form-input id="plannedMileage" type="text" placeholder="Unlimited" size="sm" v-model="plannedMileage"></b-form-input>
            </b-form-group>
         </div>
     </div> 
     <div class="containter mx-2 row">
       <div class="col">
-          <b-form-group class="mt-custom">
-              <b-form-checkbox  id="checkbox-1" size="sm" v-model="CDWProtection"  value="true" unchecked-value="false"> Collision Damage Waiver Protection </b-form-checkbox>
+          <b-form-group class="mt-custom" label="Collision Damage Waiver Protection ">
+              <b-form-radio v-model="CDWProtection" name="cwd-true" value="true">Yes</b-form-radio>
+              <b-form-radio v-model="CDWProtection" name="cwd-false" value="false">No</b-form-radio>
           </b-form-group> 
       </div>
     </div>
@@ -234,82 +235,54 @@ export default {
       return {
             minDate: minD,
             maxDate: null,
-            location: "",
+            location: null,
             startDate: null,
             endDate: null,
             showError: false,
             showCars: false,
-            brand: null,
-            brands:[
-                { value: 1, text: "BMW"},
-                { value: 1, text: "Audi"},
-                { value: 3, text: "Mercedes"},
-                { value: 4, text: "Tesla"},
-                { value: 5, text: "Opel"},
-                { value: 6, text: "Alfa Romeo"},
-                { value: 7, text: "Chevrolet"},
-                { value: 8, text: "Ferrari"},
-                { value: 9, text: "Fiat"},
-                { value: 10, text: "Ford"},
-                { value: 11, text: "Hyundai"},
-                { value: 12, text: "Peugeot"},
-                { value: 13, text: "Toyota"},      
-            ],
+            brand: null,      
             model: null,
-            models:[
-                { value: 1, text: "BMW"},
-                { value: 1, text: "Audi"},
-                { value: 3, text: "Mercedes"},
-                { value: 4, text: "Tesla"},
-                { value: 5, text: "Opel"},
-                { value: 6, text: "Alfa Romeo"},
-                { value: 7, text: "Chevrolet"},
-                { value: 8, text: "Ferrari"},
-                { value: 9, text: "Fiat"},
-                { value: 10, text: "Ford"},
-                { value: 11, text: "Hyundai"},
-                { value: 12, text: "Peugeot"},
-                { value: 13, text: "Toyota"},
-            ],
             fuelType: null,
-            fuelTypes:[
-                { value: 1, text: "Petrol"},
-                { value: 1, text: "Gas"},
-                { value: 3, text: "Diesel"},
-                { value: 4, text: "Hybrid"},
-                { value: 5, text: "Electric"},
-            ],
-            gearshift: null,
-           gearshifts:[
-                { value: 1, text: "Manuel"},
-                { value: 1, text: "Automatic"},
-                { value: 3, text: "Semi-Automatic"},
-            ],
+            gearshift: null,         
             cclass: null,
-            classes: [
-              { value: 1, text: "SUV"},
-              { value: 2, text: "Old Timer"},
-              { value: 3, text: "Saloon"},
-              { value: 4, text: "Sports Car"},     
-              { value: 5, text: "Station Vagon"},
-              { value: 5, text: "Van"},
-              { value: 6, text: "Coupe"},       
-            ],
             minPrice: null,
             maxPrice: null,
             childSeats: null,
             mileage: null,
             plannedMileage: null,
-            CDWProtection: "false",
+            CDWProtection: null,
             sortSelected: null,
-        sortingOptions: [
-          { value: 'priceAsc', text: 'Price ascending' },
-          { value: 'priceDesc', text: 'Price descendig' },
-          { value: 'mileageAsc', text: 'Mileage ascending' },
-          { value: 'mileageDesc', text: 'Mileage descending'},
-          { value: 'rateAsc', text: 'Rate ascending'},
-          { value: 'rateDesc', text: 'Rate descending'},
-        ],
+            brands:[],
+            models:[],
+            fuelTypes:[
+                { value: "Petrol", text: "Petrol"},
+                { value: "Gas", text: "Gas"},
+                { value: "Diesel", text: "Diesel"},
+                { value: "Hybrid", text: "Hybrid"},
+                { value: "Electric", text: "Electric"},
+            ],
+            gearshifts:[
+                { value: "Manuel", text: "Manuel"},
+                { value: "Automatic", text: "Automatic"},
+                { value: "Semi_automatic", text: "Semi-Automatic"},
+            ],
+            classes: [
+              { value: "Suv", text: "SUV"},
+              { value: "Old_timer", text: "Old Timer"},
+              { value: "Saloon", text: "Saloon"},
+              { value: "Sport_car", text: "Sports Car"},     
+              { value: "Station_vagon", text: "Station Vagon"},
+              { value: "Van", text: "Van"},
+              { value: "Coupe", text: "Coupe"},       
+            ],
+            sortingOptions: [
+              { value: 'priceAsc', text: 'Price ascending' },
+              { value: 'priceDesc', text: 'Price descendig' },
+              { value: 'mileageAsc', text: 'Mileage ascending' },
+              { value: 'mileageDesc', text: 'Mileage descending'},
+              { value: 'rateAsc', text: 'Rate ascending'},
+              { value: 'rateDesc', text: 'Rate descending'},
+            ],
         items: [],
         /*{
           id: 1,
@@ -381,9 +354,41 @@ export default {
         this.showCars = true;
 
       },
-      search2: function()
-      {
-        this.showCars = true;
+      search(){
+
+        if(this.minPrice != null && this.minPrice != "" && this.maxPrice != null && this.maxPrice != ""){
+          if(parseFloat(this.minPrice) >= parseFloat(this.maxPrice)){
+            this.$notify({
+                group: 'mainHolder',
+                title: 'Error',
+                text: 'Maximum price has to be greater than minimum price!',
+                type: 'error',
+                duration: 5000
+              });
+            return;
+          }
+        }
+        let searchDTO = {"location": this.location, "startDate": this.startDate, "endDate": this.endDate, "cdw":this.CDWProtection,
+        "carBrand": this.brand, "carModel": this.model, "carClass": this.cclass, "fuelType": this.fuelType,
+        "transmissionType": this.gearshift, "childrenSeats": this.childSeats, "mileage": this.mileage,
+        "plannedMileage": this.plannedMileage, "minPrice": this.minPrice, "maxPrice": this.maxPrice};
+
+        axios.post(baseUrl + "/ads",searchDTO).then(response => {
+            this.items = response.data;
+            if(this.items.length != 0){
+               this.showCars = true;
+            }else{
+              this.showCars = false;
+            }
+        }).catch(error => {
+            this.$notify({
+                group: 'mainHolder',
+                title: 'Error',
+                text: error.response.data,
+                type: 'error',
+                duration: 5000
+              });
+        });
       },
       details: function(id)
       {
@@ -394,15 +399,242 @@ export default {
            return moment(String(value)).format('DD-MMM-YYYY')
           }
       },
+      moreDetails(){
+           axios.get(baseUrl + "/carBrand").then(
+                response => {
+                 console.log(response.data);
+                 this.brands = response.data;
+           }).catch(error => {
+               console.log(error);
+           })
+      }
+    
     },
     computed:{
       formIsValid: function()
       {
-          if(this.startDate!=null && this.endDate!=null && this.startDate <= this.endDate)
+          if(this.startDate!=null && this.endDate!=null && this.startDate <= this.endDate && this.location!=null 
+          && this.stateLocation && this.stateSeats && this.stateMileage && this.statePlannedMileage && this.stateMinPrice
+          && this.stateMaxPrice)
           {
             return true;          
           }
           else return false;
+      },
+      stateLocation: function(){
+            if(this.location != "") {
+              if(this.location != null){
+                 if(!this.location.match(/^[a-zA-Z ]{1,100}$/)){
+                      return false;
+                 }else{
+                   return true;
+                 }
+                }else{
+                    return true;
+                }
+            }else{
+                  return false;
+            }
+        },
+        invalidFeedbackLocation: function(){
+            if(this.stateLocation == false){
+                  return 'Location can only contain letters and spaces. No more than 100 characters.';
+            }else{
+                  return '';
+            }      
+        },
+        validFeedbackLocation: function(){
+            
+               if(this.location != ""){
+                 if(this.location != null){
+                 if(!this.location.match(/^[a-zA-Z ]{1,100}$/)){
+                     return '';
+                 }else{
+                   return 'Valid format';
+                 }
+                }else{
+                    return '';
+                }
+            }else{
+                return '';
+            }
+                
+        },
+        stateSeats: function(){
+            if(this.childSeats != null && this.childSeats!=""){
+                 if(!this.childSeats.match(/^[0-4]$/)){
+                      return false;
+                }else{
+                    return true;
+                }
+            }else{
+                return true;
+            }
+        },
+        invalidFeedbackSeats: function(){
+            if(this.stateSeats == false){
+                  return 'Number of seats can be from 0 to 4.';
+            }else{
+                  return '';
+            }      
+        },
+        validFeedbackSeats: function(){
+            
+               if(this.childSeats != null && this.childSeats!=""){
+                 if(!this.childSeats.match(/^[0-4]$/)){
+                     return '';
+                }else{
+                    return '';
+                }
+            }else{
+                return '';
+            }
+                
+        },
+        stateMileage: function(){
+            if(this.mileage != null && this.mileage!=""){
+                 if(!this.mileage.match(/^[0-9]+$/)){
+                      return false;
+                }else{
+                    return true;
+                }
+            }else{
+                return true;
+            }
+        },
+        invalidFeedbackMileage: function(){
+            if(this.stateMileage == false){
+                  return 'Mileage has to be number >= 0';
+            }else{
+                  return '';
+            }      
+        },
+        validFeedbackMileage: function(){
+            
+               if(this.mileage != null && this.mileage!=""){
+                 if(!this.mileage.match(/^[0-9]+$/)){
+                     return '';
+                }else{
+                    return '';
+                }
+            }else{
+                return '';
+            }
+                
+        },
+        statePlannedMileage: function(){
+            if(this.plannedMileage != null && this.plannedMileage!=""){
+                 if(!this.plannedMileage.match(/^[1-9][0-9]*$/)){
+                      return false;
+                }else{
+                    return true;
+                }
+            }else{
+                return true;
+            }
+        },
+        invalidFeedbackPlannedMileage: function(){
+            if(this.statePlannedMileage == false){
+                  return 'Planned mileage has to be > 0';
+            }else{
+                  return '';
+            }      
+        },
+        validFeedbackPlannedMileage: function(){
+            
+               if(this.plannedMileage != null && this.plannedMileage!=""){
+                 if(!this.plannedMileage.match(/^[1-9][0-9]*$/)){
+                     return '';
+                }else{
+                    return '';
+                }
+            }else{
+                return '';
+            }
+                
+        },
+        stateMinPrice: function(){
+            if(this.minPrice != null && this.minPrice!=""){
+                 if(!this.minPrice.match(/^([0-9]+(?:[.][0-9]*)?|\.[0-9]+)$/)){
+                      return false;
+                }else{
+                    if(parseFloat(this.minPrice) === 0.0){
+                      return false;
+                    }
+                    return true;
+                }
+            }else{
+                return true;
+            }
+        },
+        invalidFeedbackMinPrice: function(){
+            if(this.stateMinPrice == false){
+                  return 'Decimal > 0';
+            }else{
+                  return '';
+            }      
+        },
+        validFeedbackMinPrice: function(){
+            
+               if(this.minPrice != null && this.minPrice!=""){
+                 if(!this.minPrice.match(/^([0-9]+(?:[.][0-9]*)?|\.[0-9]+)$/)){
+                     return '';
+                }else{
+                    return '';
+                }
+            }else{
+                return '';
+            }
+                
+        },
+        stateMaxPrice: function(){
+            if(this.maxPrice != null && this.maxPrice!=""){
+                 if(!this.maxPrice.match(/^([0-9]+(?:[.][0-9]*)?|\.[0-9]+)$/)){
+                      return false;
+                }else{
+                  if(parseFloat(this.maxPrice) === 0.0){
+                      return false;
+                    }
+                    return true;
+                }
+            }else{
+                return true;
+            }
+        },
+        invalidFeedbackMaxPrice: function(){
+            if(this.stateMaxPrice == false){
+                  return 'Decimal > 0';
+            }else{
+                  return '';
+            }      
+        },
+        validFeedbackMaxPrice: function(){
+            
+               if(this.maxPrice != null && this.maxPrice!=""){
+                 if(!this.maxPrice.match(/^([0-9]+(?:[.][0-9]*)?|\.[0-9]+)$/)){
+                     return '';
+                }else{
+                    return '';
+                }
+            }else{
+                return '';
+            }
+                
+        }
+
+    },
+    watch: {
+      brand: function(newValue, oldValue){
+          console.log(oldValue);
+          if(newValue != null){
+            axios.get(baseUrl + "/carBrand/" + newValue + "/carModel").then(
+              response => {
+                this.models = response.data;
+              }
+            ).catch(error => {
+                console.log(error.response);
+            })
+          }
       }
     }
   
