@@ -9,6 +9,7 @@
               <b-nav-item v-if="loggedIn" href="/" link-classes="text-light"><b>Search</b></b-nav-item>
               <b-nav-item v-if="loggedIn" href="/newAd" link-classes="text-light"><b>Post Ad</b></b-nav-item>
               <b-nav-item v-if="loggedIn" href="/statistic" link-classes="text-light"><b>Statistics</b></b-nav-item>
+              <b-nav-item v-if="loggedIn" href="/priceList" link-classes="text-light"><b>Price List</b></b-nav-item>
             </b-navbar-nav>
       
       <b-collapse id="nav-collapse" is-nav>
