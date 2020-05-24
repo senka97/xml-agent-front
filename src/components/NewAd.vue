@@ -372,11 +372,19 @@ export default {
                 this.refreshForm();
             })
             .catch(error =>{
-                this.$bvToast.toast(error.response.data, {
-                title: 'Incorrect input',
-                variant: 'danger',
-                solid: true
-                });
+                if(error.response.data.status != 400){ 
+                    this.$bvToast.toast(error.response.data, {
+                    title: 'Incorrect input',
+                    variant: 'danger',
+                    solid: true
+                    });
+                }else{ 
+                    this.$bvToast.toast(error.response.data.errors[0].defaultMessage, {
+                    title: 'Incorrect input',
+                    variant: 'danger',
+                    solid: true
+                    });
+                }
             });
         },
         chooseCar(){
@@ -395,6 +403,7 @@ export default {
                 this.ad.colision = "not_accepted";
                 this.ad.location = null;
                 this.images=[];
+                this.carChosen=false;
                 
             }else{
                 this.ad.model = this.car.carModel;

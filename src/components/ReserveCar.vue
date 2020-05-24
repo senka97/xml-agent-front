@@ -223,20 +223,7 @@ export default {
         "https://audimediacenter-a.akamaihd.net/system/production/media/49930/images/28318372b7f78fa640c07e629929a92fffb90804/A178321_x500.jpg?1582358914",
         ],
       currentImage: 0,
-        comments: [
-            {
-                id: "1",
-                user: "User1",
-                text: "This car sucks!!!!!",
-                isReplayed: true
-            },
-            {
-                id: "2",
-                user: "User2",
-                text: "The best car ever",
-                isReplayed: false
-            }
-        ],
+        comments: [],
         name: "",
         userLastname: "",
         email: "",
@@ -285,7 +272,11 @@ export default {
                   console.log(this.minDate)
                 }*/              
             }
-        )            
+        );
+        axios.get(baseUrl+'/ad/'+id+'/car/comments')
+          .then(response => {
+            this.comments = response.data;
+        });          
     },
     methods: {
       
