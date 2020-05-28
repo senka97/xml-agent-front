@@ -129,7 +129,7 @@
 
   <div class="div-resault" v-if="showCars"> 
     <div class="container d-flex mt-1">
-       <b-form-select v-model="sortSelected" :options="sortingOptions" class="col-2 ml-auto mr-custom">
+       <b-form-select v-model="sortSelected" :options="sortingOptions" @change="sortCars()" class="col-2 ml-auto mr-custom">
           <template v-slot:first>
               <b-form-select-option :value="null">Sort By</b-form-select-option>
           </template>
@@ -405,10 +405,108 @@ export default {
                  console.log(response.data);
                  this.brands = response.data;
            }).catch(error => {
-               console.log(error);
+              console.log(error);
            })
-      }
-    
+      },
+      sortCars() {
+        if(this.sortSelected === 'priceAsc') {
+          this.sortByPriceASC();
+        } else if(this.sortSelected === 'priceDesc') {
+          this.sortByPriceDESC();
+        } else if (this.sortSelected === 'mileageAsc') {
+          this.sortByMileageASC();
+        } else if (this.sortSelected === 'mileageDesc') {
+          this.sortByMileageDESC();
+        } else if (this.sortSelected === 'rateAsc') {
+          this.sortByRateASC();
+        } else {
+          this.sortByRateDESC();
+        }
+      },
+      sortByPriceASC() {
+        function compare (objA, objB) {
+          if(objA.priceList.pricePerDay < objB.priceList.pricePerDay) {
+            return -1;
+          }
+          if(objA.priceList.pricePerDay > objB.priceList.pricePerDay) {
+            return 1;
+          }
+
+          return 0;
+        }
+
+        this.items = this.items.sort( compare );
+      },
+      sortByPriceDESC() {
+        function compare (objA, objB) {
+          if(objA.priceList.pricePerDay > objB.priceList.pricePerDay) {
+            return -1;
+          }
+          if(objA.priceList.pricePerDay < objB.priceList.pricePerDay) {
+            return 1;
+          }
+
+          return 0;
+        }
+
+        this.items = this.items.sort( compare );
+      },
+      sortByMileageASC() {
+        function compare (objA, objB) {
+          if(objA.car.mileage < objB.car.mileage) {
+            return -1;
+          }
+          if(objA.car.mileage > objB.car.mileage) {
+            return 1;
+          }
+
+          return 0;
+        }
+
+        this.items = this.items.sort( compare );
+      },
+      sortByMileageDESC() {
+        function compare (objA, objB) {
+          if(objA.car.mileage > objB.car.mileage) {
+            return -1;
+          }
+          if(objA.car.mileage < objB.car.mileage) {
+            return 1;
+          }
+
+          return 0;
+        }
+
+        this.items = this.items.sort( compare );
+      },
+      sortByRateASC() {
+        function compare (objA, objB) {
+          if(objA.car.rate < objB.car.rate) {
+            return -1;
+          }
+          if(objA.car.rate > objB.car.rate) {
+            return 1;
+          }
+
+          return 0;
+        }
+
+        this.items = this.items.sort( compare );
+      },
+      sortByRateDESC() {
+        function compare (objA, objB) {
+          if(objA.car.rate > objB.car.rate) {
+            return -1;
+          }
+          if(objA.car.rate < objB.car.rate) {
+            return 1;
+          }
+
+          return 0;
+        }
+
+        this.items = this.items.sort( compare );
+      },
     },
     computed:{
       formIsValid: function()
