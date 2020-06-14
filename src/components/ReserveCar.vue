@@ -94,7 +94,7 @@
         <b-modal id="modal-1" ref="replyModal" title="Your reply" hide-footer>
           <validation-observer ref="observer" v-slot="{ handleSubmit }">
             <b-form @submit.prevent="handleSubmit(postReply)"> 
-              <validation-provider name="Comment" :rules="{ required: true, alpha_spaces: true, min: 2 }" v-slot="validationContext">
+              <validation-provider name="Comment" :rules="{ required: true, regex: /^[a-zA-Z0-9?'!,:;. ]*$/, min: 2 }" v-slot="validationContext">
                 <b-form-group  align="left" >
                   <b-form-textarea id="textareaReply" placeholder="Enter reply..." rows="3" no-resize v-model="textareaReply" :state="getValidationState(validationContext)"></b-form-textarea>               
                   <b-form-invalid-feedback id="reply">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
@@ -113,7 +113,7 @@
           <b-row>
             <!-- leva kolona - komentari-->
             <b-col class="col-6"> 
-              <b-card id="comments-card" v-b-toggle.collapse-1  no-body class="overflow-hidden shadow mb-3 ml-5 mr-5" header-bg-variant="warning">
+              <b-card id="comments-card" v-if="this.retrievedComments" v-b-toggle.collapse-1  no-body class="overflow-hidden shadow mb-3 ml-5 mr-5" header-bg-variant="warning">
                 <template v-slot:header>
                   <h2 class="sm-0 text-center">Show Comments </h2>
                 </template>
@@ -254,6 +254,7 @@ export default {
         adId: null,
         textareaReply: '',
         commentId: null,
+        retrievedComments: null,
         }
         
     },
@@ -336,14 +337,17 @@ export default {
       {
         axios.get("http://localhost:8080/soap/comments/"+ this.adId).then(
             response=> {
-                this.comments = response.data;                    
+                this.comments = response.data;    
+                this.retrievedComments = true;                
             }
-        );   
+        ).catch(
+              this.retrievedComments = false
+          );   
       },
 
-      postReply() //srediti
+      postReply() 
       {
-        axios.put("https://localhost:8083/car-service/api/comments/"+ this.commentId,{
+        axios.put("http://localhost:8080/soap/comments/"+ this.commentId,{
               "replyContent": this.textareaReply,
         }).then(
           response => {
