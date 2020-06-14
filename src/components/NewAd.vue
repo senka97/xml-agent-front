@@ -136,6 +136,11 @@
                         </b-col>
                         </b-row>
                           <b-row>
+                            <b-col>
+                                <b-form-group label-cols-lg="5" label-size="sm" label="Kilometer limit:" >
+                                <b-form-input type="number" min="0" size="sm" placeholder="Unlimiterd" v-model="ad.limitKm"></b-form-input>
+                                </b-form-group>
+                            </b-col>
                                <b-col>
                                 <b-form-checkbox 
                                     v-model="ad.colision"
@@ -146,6 +151,8 @@
                                 </b-form-checkbox>
                                 
                             </b-col>
+                          </b-row>
+                          <b-row>
                             <b-col>
                                 <b-form-checkbox 
                                     id="checkbox-1"
@@ -296,7 +303,8 @@ export default {
                 maxDate:null,
                 minPrice:null,
                 androidApp:"not_accepted",
-                location:null
+                location:null,
+                limitKm:0
              },
              carModels:[],
              carId:null,
