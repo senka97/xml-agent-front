@@ -13,7 +13,6 @@
           <b-row class="mb-3 mx-5">
             <!--leva kolona - slike-->          
             <b-col >
-            <!-- <b-card-img :src="require('@/assets/audi_a8.jpeg')" alt="Image"  class="rounded-0 "></b-card-img>-->
              <b-carousel ref="myCarousel" v-model="currentImage" controls indicators  class="mt-3 mr-5 carousel-custom shadow" >
                 <b-carousel-slide  v-for="img in item.car.photos64" :key="img" :img-src="img"></b-carousel-slide>
              </b-carousel>
@@ -92,6 +91,23 @@
             </b-col>
           </b-row>
         
+        <b-modal id="modal-1" ref="replyModal" title="Your reply" hide-footer>
+          <validation-observer ref="observer" v-slot="{ handleSubmit }">
+            <b-form @submit.prevent="handleSubmit(postReply)"> 
+              <validation-provider name="Comment" :rules="{ required: true, alpha_spaces: true, min: 2 }" v-slot="validationContext">
+                <b-form-group  align="left" >
+                  <b-form-textarea id="textareaReply" placeholder="Enter reply..." rows="3" no-resize v-model="textareaReply" :state="getValidationState(validationContext)"></b-form-textarea>               
+                  <b-form-invalid-feedback id="reply">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+                </b-form-group>
+              </validation-provider>
+      
+              <div class="row d-flex justify-content-center">
+                <b-button class="mt-3 mr-2 col-3" variant="outline-dark"  block @click="hideModal">Close</b-button>
+                <b-button class="mt-3 col-3" variant="dark" block type="submit">Post</b-button>
+              </div>
+            </b-form>
+          </validation-observer>  
+        </b-modal>
         
           <!-- drugi red -->
           <b-row>
@@ -103,18 +119,25 @@
                 </template>
               </b-card>
               <b-collapse id="collapse-1" class="mx-5 my-2">
-                <b-card >
-                <div v-for="comment in comments" :key="comment.id"> 
-                  <b-form-group  align="left" :label="comment.user" label-for="comment">
-                    <b-form-textarea id="comment"  type="text" disabled :placeholder="comment.text"></b-form-textarea>
-                  </b-form-group>       
-                 <!-- <b-form-group :v-show="!comment.isReplayed">
-                    <b-form-textarea class="mx-4 my-2"  placeholder="Replay"> </b-form-textarea>
-                  </b-form-group>  -->                                             
-                </div>
+              <div class="container mt-3 custom-dim-comment" v-for="c in comments" :key="c.id">
+                <b-card class="mb-1 shadow">
+                  <b-card-text>
+                    <p class="font-weight-bold">{{c.userName + ' ' + c.userLastname}}</p>
+                    <p>{{c.content}}</p>
+                  </b-card-text>
                 </b-card>
-              </b-collapse>                     
+                <b-btn v-show="!c.isReplied" class="buttons ml-1" @click="showModal(c.id)">Reply</b-btn>
+      
+                <b-card v-show="c.isReplied && c.replyContent!=null" class="mb-3 shadow custom-dim-reply">
+                  <b-card-text>
+                    <p class="font-weight-bold"> Your reply: </p>
+                    <p>{{c.replyContent}}</p>
+                  </b-card-text>
+                </b-card>
+              </div>
+              </b-collapse>                 
             </b-col>
+
             <!--desna kolona - rezervacija-->
             <b-col class="col-6">
                <b-card id="reserve-card" v-b-toggle.collapse-2  no-body class="overflow-hidden shadow mb-3  ml-5 mr-5" header-bg-variant="warning">
@@ -218,10 +241,6 @@ export default {
             carModel: []
           }
         },
-        images: [
-        "https://stimg.cardekho.com/images/carexteriorimages/930x620/Audi/Audi-A8-2019/6722/1544785682176/front-left-side-47.jpg",
-        "https://audimediacenter-a.akamaihd.net/system/production/media/49930/images/28318372b7f78fa640c07e629929a92fffb90804/A178321_x500.jpg?1582358914",
-        ],
       currentImage: 0,
         comments: [],
         name: "",
@@ -232,6 +251,9 @@ export default {
         endDate: null,
         minDate: null,
         maxDate: null,
+        adId: null,
+        textareaReply: '',
+        commentId: null,
         }
         
     },
@@ -239,7 +261,7 @@ export default {
         var id = this.$route.fullPath;
         id = id.split('?')[1];
         id = id.split('=')[1];
-  
+        this.adId = id;
         
         axios.get(baseUrl + "/ads/"+id).then(
             response=> {
@@ -251,32 +273,25 @@ export default {
 
                 var y = new Date(this.item.startDate[0], this.item.startDate[1]-1, this.item.startDate[2]);
                 var minD = new Date(y);
-                this.minDate = minD;
 
-                // za sada moze da se rezervise u proslosti, ako je pocetni datum manji od danasnjeg datuma jer ovo ne radi
-
-               /* var now = new Date();
+                var now = new Date();
                 var z = new Date(now.getFullYear(), now.getMonth(), now.getDate());
                 var today = new Date(z);
 
-                if(moment(today).format("DD-MMM-YYYY") > moment(minD).format("DD-MMM-YYYY"))
+                if(today > minD)
                 {
                   this.minDate = today;
-                  console.log("today je vece");
-                  console.log("min date: " + minD);
-                  console.log("today date: "+ today);
+                  
                 }
                 else
                 {
                   this.minDate = minD;
-                  console.log(this.minDate)
-                }*/              
+                }           
             }
         );
-        axios.get(baseUrl+'/ad/'+id+'/car/comments')
-          .then(response => {
-            this.comments = response.data;
-        });          
+        
+        this.getComments();
+        
     },
     methods: {
       
@@ -315,6 +330,53 @@ export default {
           }
           
           });
+      },
+
+      getComments()
+      {
+        axios.get("http://localhost:8080/soap/comments/"+ this.adId).then(
+            response=> {
+                this.comments = response.data;                    
+            }
+        );   
+      },
+
+      postReply() //srediti
+      {
+        axios.put("https://localhost:8083/car-service/api/comments/"+ this.commentId,{
+              "replyContent": this.textareaReply,
+        }).then(
+          response => {
+            console.log(response.data);
+            this.$bvToast.toast("Admin will have to approve before reply is shown.", {
+              title: "Reply sent",
+              variant: "success",
+              solid: true
+            });
+             this.textareaReply = '';
+             this.hideModal();
+             this.getComments();
+             
+          }).catch(error => {
+            this.$bvToast.toast(error.response.data, {
+              title: "Error",
+              variant: "danger",
+              solid: true
+            });
+             this.textareaReply = '';
+             this.hideModal();
+          })
+      },
+
+      showModal: function(id) {
+        this.$refs["replyModal"].show();
+        this.commentId = id;
+        console.log(id);
+      },
+
+      hideModal() {
+        this.textareaReply = '';
+        this.$refs["replyModal"].hide();
       },
       prev() {
         this.currentImage = this.images.length - 1;
@@ -359,6 +421,17 @@ export default {
 }
 .container{
   width: 150em;
+}
+
+.custom-dim-comment {
+  width: 100%;
+  height: 25%;
+}
+
+.custom-dim-reply{
+  width: 90%;
+  height: 25%;
+  margin-left: 3.7em;
 }
 
 </style>
