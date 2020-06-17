@@ -2,19 +2,24 @@
   <div>
     <NavBar />
     <div class="container style-chat">
-       <b-card bg-variant="warning" class="mb-3" style="height:98%;">
+       <b-card class="mb-3" style="height:98%;">
         <template v-slot:header>
           <h5 class="mb-0">Chat</h5>
         </template>
-        <b-card-text style="height:90%;">
+        <div  v-if="loading" align="center">
+            <br/>
+            <br/>
+            <b-spinner style="width: 5rem; height: 5rem;" label="Large Spinner"></b-spinner>
+        </div>
+        <b-card-text v-if="!loading" style="height:90%;">
             <div class="div-messages" v-chat-scroll>
             <div class="container style-message-box" v-for="m in messagesDTO.messages" :key="m.id">
-            <div v-if="messageDTO.agentId != m.fromUserId" class="container style-message-left">
+            <div v-if="messagesDTO.agentId != m.fromUserId" class="container style-message-left">
                 <p class="font-weight-bold p-message">{{m.fromUserInfo}}</p>
                 <p class="p-message">{{m.content}}</p>
                 <p class="p-message-time">{{format_date(m.dateTime)}}</p>
             </div>
-            <div v-if="messageDTO.agentId == m.fromUserId" class="container style-message-right">
+            <div v-if="messagesDTO.agentId == m.fromUserId" class="container style-message-right">
                 <p class="font-weight-bold p-message">{{m.fromUserInfo}} - Me</p>
                 <p class="p-message">{{m.content}}</p>
                 <p class="p-message-time">{{format_date(m.dateTime)}}</p>
@@ -60,10 +65,12 @@ export default {
             messagesDTO: null,
             message: "",
             requestID: "",
+            loading: true,
         }
 
     },
     created() {     
+      this.loading = true;
       this.getMessages();                    
     },
     methods: {
@@ -75,9 +82,12 @@ export default {
             axios.get("http://localhost:8080/api/message/request/" + this.requestID).then(
                 response => {
                     this.messagesDTO = response.data;
+                    console.log(this.messagesDTO);
+                    this.loading = false;
                 }
             ).catch(error => {
                 console.log(error.response);
+                this.loading = false;
             })
 
         },
@@ -117,7 +127,10 @@ export default {
         },
         format_date(value){
          if (value) {
-           return moment(String(value)).format("DD/MM/YYYY HH:mm:ss")
+           let str = value[2] + "-" + value[1] + '-' + value[0] + ' ' + value[3] + ':' + value[4] + ':' + value[5];
+           //let date = new Date(str);
+           //console.log(date);
+           return moment(String(str), ['DD-MM-YYYY HH:mm:ss']).format("DD/MM/YYYY HH:mm:ss")
           }
       },
    },
