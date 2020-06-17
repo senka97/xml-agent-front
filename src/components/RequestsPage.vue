@@ -246,10 +246,10 @@ export default {
           }
       },
 
-    /*  goToChat(id)
+      goToChat(id)
       {
           this.$router.push({ path: '/requests/'+ id +'/chat'});
-      }*/
+      }
 
     },
     created()
