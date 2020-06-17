@@ -306,8 +306,9 @@ export default {
                 clientEmail: this.email,
                 adId: this.item.id
             })
-           .then(() => {
-                 this.$bvToast.toast('Car reserved from '+ this.startDate + ' to '+ this.endDate, {
+           .then((response) => {
+                console.log(response.data);
+                this.$bvToast.toast('Car reserved from '+ this.startDate + ' to '+ this.endDate, {
                 title: 'Reservation Successful',
                 variant: 'success',
                 solid: true
@@ -325,6 +326,12 @@ export default {
           {
               this.$bvToast.toast(error.response.data, {
                 title: 'Reservation failed',
+                variant: 'danger',
+                solid: true
+                });
+          }else if(error.response && error.response.status === 500){
+              this.$bvToast.toast(error.response.data, {
+                title: 'Server error',
                 variant: 'danger',
                 solid: true
                 });
