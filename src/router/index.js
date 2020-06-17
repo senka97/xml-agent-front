@@ -7,6 +7,8 @@ import NewAd from '../components/NewAd.vue'
 import ReserveCar from '../components/ReserveCar.vue'
 import Statistic from '../components/Statistic.vue'
 import PriceList from '../components/PriceList.vue'
+import RequestsPage from '../components/RequestsPage.vue'
+import NewRequestsPage from '../components/NewRequestsPage.vue'
 
 Vue.use(Router)
 
@@ -47,6 +49,16 @@ export default new Router({
             path: '/priceList',
             name: 'PriceList',
             component: PriceList
+        },
+        {
+            path: '/requests',
+            name: 'RequestsPage',
+            component: RequestsPage
+        },
+        {
+            path: '/newRequests',
+            name: 'NewRequestsPage',
+            component: NewRequestsPage
         },
         {
             path: '*',
