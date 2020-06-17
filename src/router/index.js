@@ -7,6 +7,7 @@ import NewAd from '../components/NewAd.vue'
 import ReserveCar from '../components/ReserveCar.vue'
 import Statistic from '../components/Statistic.vue'
 import PriceList from '../components/PriceList.vue'
+import Chat from '../components/Chat.vue'
 
 Vue.use(Router)
 
@@ -47,6 +48,11 @@ export default new Router({
             path: '/priceList',
             name: 'PriceList',
             component: PriceList
+        },
+        {
+            path: '/requests/:id/chat',
+            name: 'Chat',
+            component: Chat 
         },
         {
             path: '*',
