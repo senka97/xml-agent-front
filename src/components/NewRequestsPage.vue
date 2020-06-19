@@ -137,7 +137,7 @@ export default {
 
       accept(id)
       {
-          axios.put("http://localhost:8080/api/request/accept/" + id).then(
+          axios.put("http://localhost:8086/api/request/accept/" + id).then(
             response=> {
                 console.log(response.data);
                 this.$bvToast.toast("You have successfully accept the request. Some other requests may have been automatically rejected.", {
@@ -145,7 +145,7 @@ export default {
                     variant: "success",
                     solid: true
                   });
-                  axios.get("http://localhost:8080/api/request/pending").then(
+                  axios.get("http://localhost:8086/api/request/pending").then(
                         response=> {
                             this.newRequests = response.data; 
                             console.log(this.newRequests); 
@@ -190,7 +190,7 @@ export default {
 
       reject(id)
       {
-          axios.put("http://localhost:8080/api/request/reject/" + id).then(
+          axios.put("http://localhost:8086/api/request/reject/" + id).then(
             response=> {
                 console.log(response);
                 let i = 0;
@@ -214,7 +214,7 @@ export default {
 
   created(){
       this.loading = true;
-      axios.get("http://localhost:8080/api/request/pending").then(
+      axios.get("http://localhost:8086/api/request/pending").then(
             response=> {
                 this.newRequests = response.data; 
                 console.log(this.newRequests); 

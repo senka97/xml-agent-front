@@ -224,7 +224,7 @@ import NavBar from "../components/NavBar.vue";
 import axios from "axios";
 import moment from 'moment'
 
-const baseUrl = "http://localhost:8080/api";
+const baseUrl = "http://localhost:8086/api";
 
 export default {
     name: 'ReserveCar',
@@ -342,7 +342,7 @@ export default {
 
       getComments()
       {
-        axios.get("http://localhost:8080/soap/comments/"+ this.adId).then(
+        axios.get("http://localhost:8086/soap/comments/"+ this.adId).then(
             response=> {
                 this.comments = response.data;    
                 this.retrievedComments = true;                
@@ -354,7 +354,7 @@ export default {
 
       postReply() 
       {
-        axios.put("http://localhost:8080/soap/comments/"+ this.commentId,{
+        axios.put("http://localhost:8086/soap/comments/"+ this.commentId,{
               "replyContent": this.textareaReply,
         }).then(
           response => {
