@@ -35,13 +35,19 @@
 
                 <b-form-group label="Price per km:" >
                     <b-input-group  append="€">
-                        <b-form-input required  type="number" :min="0" v-model="pricePerKm" placeholder="0"></b-form-input>
+                        <b-form-input required  type="number" v-model="pricePerKm" placeholder="0"></b-form-input>
                     </b-input-group>
                 </b-form-group>
                       
                 <b-form-group  label="Price per day:" >
                     <b-input-group  append="€">
-                        <b-form-input required  type="number" :min="0" v-model="pricePerDay" placeholder="0"></b-form-input>
+                        <b-form-input required  type="number" v-model="pricePerDay" placeholder="0"></b-form-input>
+                    </b-input-group>
+                </b-form-group>
+
+                <b-form-group  label="Price for cdw:" >
+                    <b-input-group  append="€">
+                        <b-form-input required  type="number" v-model="priceForCdw" placeholder="0"></b-form-input>
                     </b-input-group>
                 </b-form-group>
                            
@@ -88,6 +94,7 @@ export default {
             "alias",
             "pricePerDay",
             "pricePerKm",
+            "priceForCdw",
             "discount20Days",
             "discount30Days",
             "delete"
@@ -95,8 +102,9 @@ export default {
           items: [],
           pricePerDay: null,
           pricePerKm: null,
-          discount20Days: null,
-          discount30Days: null,
+          priceForCdw: null,
+          discount20Days: 0,
+          discount30Days: 0,
           alias: "",
         }
     },
@@ -136,14 +144,36 @@ export default {
       
       createPriceList()
       {
+        let msg = "";
+          let valid = true;
+          if(this.alias.trim() === "" && this.alias.length>0){
+              msg += "Alias can't have only white spaces. ";
+              valid = false;
+          }
+          
+          if(this.pricePerDay <= 0 || this.pricePerKm <= 0 || this.priceForCdw <= 0){
+              msg += "Prices have to be grater than 0.";
+              valid = false;
+          }
+          if(!valid){
+             this.$bvToast.toast(msg, {
+                        title: 'Invalid input values',
+                        variant: 'danger',
+                        solid: true
+                        });
+             return;
+          }   
+
           axios.post(baseUrl+'/priceLists',{
-                alias: this.alias,
-                pricePerDay: this.pricePerDay,
-                pricePerKm: this.pricePerKm,
-                discount20Days: this.discount20Days,
-                discount30Days:this.discount30Days,
+                "alias": this.alias,
+                "pricePerDay": this.pricePerDay,
+                "pricePerKm": this.pricePerKm,
+                "priceForCdw": this.priceForCdw,
+                "discount20Days": this.discount20Days,
+                "discount30Days":this.discount30Days,
             })
-           .then(() => {
+           .then((response) => {
+                console.log(response.data);
                 this.$bvToast.toast('New Price List Created ', {
                     title: 'Success',
                     variant: 'success',
@@ -154,8 +184,8 @@ export default {
           })
           .catch(error => {
           if (error.response) {
-              this.$bvToast.toast("Price list alias already exists", {
-                title: 'Bad Request',
+              this.$bvToast.toast(error.response.data, {
+                title: 'Error',
                 variant: 'danger',
                 solid: true
                 });
@@ -165,10 +195,11 @@ export default {
       refreshForm()
       {
         this.alias = "";
-        this.pricePerDay= null;
-        this.pricePerKm= null;
-        this.discount20Days = null;
-        this.discount30Days= null;       
+        this.pricePerDay = null;
+        this.pricePerKm = null;
+        this.priceForCdw = null;
+        this.discount20Days = 0;
+        this.discount30Days= 0;       
       },
       
 
