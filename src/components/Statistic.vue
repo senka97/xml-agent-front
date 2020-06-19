@@ -197,7 +197,7 @@
 
 import NavBar from '../components/NavBar.vue'
 import axios from "axios";
-const baseUrl = "http://localhost:8080/api";
+const baseUrl = "http://localhost:8086/api";
 export default {
     name: 'Statistic',
     components: {

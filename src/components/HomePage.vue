@@ -219,7 +219,7 @@
 import NavBar from "../components/NavBar.vue";
 import axios from "axios";
 import moment from 'moment';
-const baseUrl = "http://localhost:8080/api";
+const baseUrl = "http://localhost:8086/api";
 
 export default {
     name: "HomePage",
@@ -284,65 +284,6 @@ export default {
               { value: 'rateDesc', text: 'Rate descending'},
             ],
         items: [],
-        /*{
-          id: 1,
-          image:
-            "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/2020-audi-a8-mmp-1-1573063953.jpeg?crop=0.704xw:1.00xh;0.208xw,0&resize=640:*",
-          brand: "Audi",
-          model: "A8",
-          price: 75,
-          fuelType: "Disel",
-          vehicletype: "Saloon",
-          transmission: "Manual",
-          mileage: 15000,
-          kilometerLimit: "Unlimited",
-          childrenSeats: 0,
-          cdw: true,
-          rate: 4.5,
-          location: "Novi Sad",
-          startDate: "05.05.2020.",
-          endDate: "05.05.2021."
-        },
-
-        {
-          id: 2,
-          image:
-            "https://audimediacenter-a.akamaihd.net/system/production/media/49930/images/28318372b7f78fa640c07e629929a92fffb90804/A178321_x500.jpg?1582358914",
-          brand: "Audi",
-          model: "A8",
-          price: 75,
-          fuelType: "Disel",
-          vehicletype: "Saloon",
-          transmission: "Manual",
-          mileage: 15000,
-          kilometerLimit: "Unlimited",
-          childrenSeats: 0,
-          cdw: true,
-          rate: 4.5,
-          location: "Novi Sad",
-          startDate: "05.05.2020.",
-          endDate: "05.05.2021."
-        },
-        {
-          id: 3,
-          image:
-            "https://www.truck1-rs.com/img/Druga_masina_Automobil_Audi_A8_4_2_TDI_quattro-xxl-1761/1761_4868520394238.jpg",
-          brand: "Audi",
-          model: "A8",
-          price: 75,
-          fuelType: "Disel",
-          vehicletype: "Saloon",
-          transmission: "Manual",
-          mileage: 15000,
-          kilometerLimit: "Unlimited",
-          childrenSeats: 0,
-          cdw: true,
-          rate: 4.5,
-          location: "Novi Sad",
-          startDate: "05.05.2020.",
-          endDate: "05.05.2021."
-        },*/
-      
         }
     },
     methods: {

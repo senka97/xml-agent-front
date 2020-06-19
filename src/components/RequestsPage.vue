@@ -99,12 +99,16 @@
                              </b-col>
                           </b-row>  
                         </b-col>    
-                      </b-row>                
+                      </b-row>
+                      <hr>
+                      <b-row>
+                        <b-button v-if="!reqAd.reportCreated"  type="button" class="ml-auto mr-4  mb-3 buttons" variant="dark" @click="showModal1(reqAd)"> Report </b-button>
+                        <b-button v-if="reqAd.reportCreated"  type="button" class="ml-auto mr-4  mb-3 buttons" variant="dark" @click="showRequestReport(reqAd)"> Show Report </b-button>
+                      </b-row>                  
                     </b-card>
                   </div>
                   <b-row>
-                    <b-button  type="button" class="ml-auto mr-2 mt-3 mb-3 buttons" variant="dark"> Report </b-button>
-                    <b-button  type="button" class="mr-4 mt-3 mb-3 buttons" variant="success" @click="goToChat(req.id)">Chat</b-button>
+                    <b-button  type="button" class="mr-4 ml-auto mt-3 mb-3 buttons" variant="success" @click="goToChat(req.id)">Chat</b-button>
                   </b-row> 
                 </b-card>
               </div>
@@ -198,7 +202,8 @@
                     </b-card>
                   </div>
                   <b-row>
-                    <b-button  type="button" class="ml-auto mr-4 mt-3 mb-3 buttons" variant="dark"> Report </b-button>
+                    <b-button v-if="!res.reportCreated"  type="button" class="ml-auto mr-4 mt-3 mb-3 buttons" variant="dark" @click="showModal2(res)"> Report </b-button>
+                    <b-button v-if="res.reportCreated"  type="button" class="ml-auto mr-4 mt-3 mb-3 buttons" variant="dark" @click="showReservationReport(res)" >Show Report </b-button>
                   </b-row> 
                 </b-card>
               </div>
@@ -210,6 +215,102 @@
 
       </div>
 
+    <b-modal id="modal-1" ref="reportModal1" title="Report for request" hide-footer>
+      <validation-observer ref="observer" v-slot="{ handleSubmit }">
+      <b-form @submit.prevent="handleSubmit(writeRequestReport)"> 
+        <b-row class="mt-2">
+          <b-col>
+          <h3 class="text-center"> {{carBrand + ' ' + carModel}} </h3>
+          </b-col>
+        </b-row>
+        <hr>
+        <b-row class="mt-2 mb-2">
+          <b-col>
+          <h5 class="text-center"> <b> Rented from: </b> {{format_date(startDate)}} <b> to: </b> {{format_date(endDate)}} </h5>
+          </b-col>
+        </b-row>
+        <hr>
+        <b-form-group  label="Mileage:" >
+        <b-input-group  append="Km">
+           <b-form-input required  type="number" :min="1" v-model="mileageReport" placeholder="Enter number of kilometers"></b-form-input>
+        </b-input-group>
+      </b-form-group>
+       <validation-provider name="Text" :rules="{ required: true, regex: /^[a-zA-Z0-9?'!,:;. ]*$/, min: 2 }" v-slot="validationContext">
+        <b-form-group label="Enter report:" align="left" >
+          <b-form-textarea id="textareaReply" placeholder="Write here..." rows="3" no-resize v-model="textareaReport" :state="getValidationState(validationContext)"></b-form-textarea>               
+          <b-form-invalid-feedback id="reply">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+        </b-form-group>
+      </validation-provider>
+      <div class="row d-flex justify-content-center">
+        <b-button class="mt-3 mr-2 col-3" variant="outline-dark"  block @click="hideModal1">Close</b-button>
+        <b-button class="mt-3 col-3" variant="dark" block type="submit">Post</b-button>
+      </div>
+      </b-form>
+      </validation-observer>  
+    </b-modal>
+
+    <b-modal id="modal-2" ref="reportModal2" title="Report for reservation" hide-footer>
+      <validation-observer ref="observer" v-slot="{ handleSubmit }">
+      <b-form @submit.prevent="handleSubmit(writeReservationReport)"> 
+        <b-row class="mt-2">
+          <b-col>
+          <h3 class="text-center"> {{carBrand + ' ' + carModel}} </h3>
+          </b-col>
+        </b-row>
+        <hr>
+        <b-row class="mt-2 mb-2">
+          <b-col>
+          <h5 class="text-center"> <b> Rented from: </b> {{format_date(startDate)}} <b> to: </b> {{format_date(endDate)}} </h5>
+          </b-col>
+        </b-row>
+        <hr>
+        <b-form-group  label="Mileage:" >
+        <b-input-group  append="Km">
+           <b-form-input required  type="number" :min="1" v-model="mileageReport" placeholder="Enter number of kilometers"></b-form-input>
+        </b-input-group>
+      </b-form-group>
+       <validation-provider name="Text" :rules="{ required: true, regex: /^[a-zA-Z0-9?'!,:;. ]*$/, min: 2 }" v-slot="validationContext">
+        <b-form-group label="Enter report:" align="left" >
+          <b-form-textarea id="textareaReply" placeholder="Write here..." rows="3" no-resize v-model="textareaReport" :state="getValidationState(validationContext)"></b-form-textarea>               
+          <b-form-invalid-feedback id="reply">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
+        </b-form-group>
+      </validation-provider>
+      <div class="row d-flex justify-content-center">
+        <b-button class="mt-3 mr-2 col-3" variant="outline-dark"  block @click="hideModal2">Close</b-button>
+        <b-button class="mt-3 col-3" variant="dark" block type="submit">Post</b-button>
+      </div>
+      </b-form>
+      </validation-observer>  
+    </b-modal>
+
+    <b-modal id="modal-3" ref="reportModal3" title="Your Report" hide-footer>
+        <b-row class="mt-2">
+          <b-col>
+          <h3 class="text-center"> {{carBrand + ' ' + carModel}} </h3>
+          </b-col>
+        </b-row>
+        <hr>
+        <b-row class="mt-2 mb-2">
+          <b-col>
+          <h5 class="text-center"> <b> Rented from: </b> {{format_date(startDate)}} <b> to: </b> {{format_date(endDate)}} </h5>
+          </b-col>
+        </b-row>
+        <hr>
+        <b-row class="ml-3 mt-2 mb-2">
+          <b-col> 
+            <h5> Number of kilometers: </h5> {{this.report.km}} 
+          </b-col>
+        </b-row>
+        <b-row class="ml-3 mt-2 mb-2">
+          <b-col> 
+            <h5> Content: </h5>  {{this.report.content}} 
+          </b-col>
+        </b-row>
+        <div class="row d-flex justify-content-center">
+          <b-button class="mt-3 mr-2 col-3" variant="outline-dark"  block @click="hideModal3">Close</b-button>
+        </div>
+  
+    </b-modal>
 
   </div>
 </template>
@@ -232,6 +333,19 @@ export default {
            showEmptyReservations: false,
            paidRequests: [],
            reservations: [],
+
+           textareaReport: '',
+           mileageReport: null,
+
+           requestAdId: null,
+           reservationId: null,
+           
+           carBrand: null,
+           carModel: null,
+           startDate: null, 
+           endDate: null,
+
+           report: [],
         }
     },
      methods: {
@@ -249,13 +363,201 @@ export default {
       goToChat(id)
       {
           this.$router.push({ path: '/requests/'+ id +'/chat'});
-      }
+      },
 
-    },
-    created()
-    {    
-      this.loading = true;
-      axios.get("http://localhost:8080/api/request/paid").then(
+      showModal1: function(reqAd) { 
+        
+        var now = new Date();
+        var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        var z = new Date(today);
+       
+        var x = new Date(reqAd.endDate);
+
+        if(x < z)
+        {
+          this.$refs["reportModal1"].show();
+          this.textareaReport = '';
+          this.mileageReport = null;
+          this.requestAdId = reqAd.id;
+          this.startDate = reqAd.startDate;
+          this.endDate = reqAd.endDate;
+          this.carBrand = reqAd.ad.car.carBrand;
+          this.carModel = reqAd.ad.car.carModel;
+          console.log(reqAd.id);
+        }
+        else{
+          this.$bvToast.toast("Can't write report before request expires.", {
+              title: "Forbidden",
+              variant: "warning",
+              solid: true
+            });
+        }
+        
+      },
+
+      hideModal1() {
+        this.textareaReport = '';
+        this.mileageReport = null;
+        this.startDate = null;
+        this.endDate = null;
+        this.carModel = null;
+        this.carBrand = null;
+        this.$refs["reportModal1"].hide();
+      },
+
+      showModal2: function(res) {
+
+        var now = new Date();
+        var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        var z = new Date(today);
+
+        var x = new Date(res.endDate);
+
+        if(x < z)
+        {
+          this.$refs["reportModal2"].show();
+          this.textareaReport = '';
+          this.mileageReport = null;
+          this.reservationId = res.id;
+          this.startDate = res.startDate;
+          this.endDate = res.endDate;
+          this.carBrand = res.ad.car.carBrand;
+          this.carModel = res.ad.car.carModel;
+          console.log(res.id);
+        }
+        else{
+          this.$bvToast.toast("Can't write report before reservation expires.", {
+              title: "Forbidden",
+              variant: "warning",
+              solid: true
+            });
+        }
+
+        
+      },
+
+      hideModal2() {
+        this.textareaReport = '';
+        this.mileageReport = null;
+        this.startDate = null;
+        this.endDate = null;
+        this.carModel = null;
+        this.carBrand = null;
+        this.$refs["reportModal2"].hide();
+      },
+
+      showModal3: function() {
+        this.$refs["reportModal3"].show();
+      },
+
+      hideModal3() {
+        this.report = [];
+        this.startDate = null;
+        this.endDate = null;
+        this.carModel = null;
+        this.carBrand = null;
+        this.$refs["reportModal3"].hide();
+      },
+
+      writeRequestReport()
+      {
+        console.log("RequestAdId:"+ this.requestAdId );
+          axios.post("http://localhost:8086/api/reports/request",{
+              "content": this.textareaReport,
+              "km": this.mileageReport,
+              "requestAdId": this.requestAdId,
+        }).then(
+          response => {
+            console.log(response.data);
+            this.$bvToast.toast("Report saved.", {
+              title: "Success",
+              variant: "success",
+              solid: true
+            });
+             this.textareaReport = '';
+             this.hideModal1();
+             this.getRequests();
+             this.getReservations();
+        }).catch(error => {
+            this.$bvToast.toast(error.response.data, {
+              title: "Error",
+              variant: "danger",
+              solid: true
+            });
+             this.textareaReport = '';
+          })
+      },
+
+      writeReservationReport()
+      {
+          axios.post("http://localhost:8086/api/reports/reservation",{
+              "content": this.textareaReport,
+              "km": this.mileageReport,
+              "reservationId": this.reservationId,
+        }).then(
+          response => {
+            console.log(response.data);
+            this.$bvToast.toast("Report saved.", {
+              title: "Success",
+              variant: "success",
+              solid: true
+            });
+             this.textareaReport = '';
+             this.hideModal2();
+             this.getReservations();
+             this.getRequests();
+        }).catch(error => {
+            this.$bvToast.toast(error.response.data, {
+              title: "Error",
+              variant: "danger",
+              solid: true
+            });
+             this.textareaReport = '';
+          })
+      },
+
+      showRequestReport(reqAd)
+      {
+        axios.get("http://localhost:8086/api/reports/request/"+reqAd.id).then(
+            response=> {
+                this.report = response.data;        
+            } 
+        ).catch(error => {
+            console.log(error.response.data);
+        });  
+
+          this.startDate = reqAd.startDate;
+          this.endDate = reqAd.endDate;
+          this.carBrand = reqAd.ad.car.carBrand;
+          this.carModel = reqAd.ad.car.carModel;
+          this.showModal3();
+      },
+
+      showReservationReport(res)
+      {
+         axios.get("http://localhost:8086/api/reports/reservation/"+res.id).then(
+            response=> {
+                this.report = response.data;        
+            } 
+        ).catch(error => {
+            console.log(error.response.data);
+        });  
+
+          this.startDate = res.startDate;
+          this.endDate = res.endDate;
+          this.carBrand = res.ad.car.carBrand;
+          this.carModel = res.ad.car.carModel;
+          this.showModal3();
+      },
+
+      getValidationState({ dirty, validated, valid = null }) {
+        return dirty || validated ? valid : null;
+      },
+
+      getRequests()
+      {
+        
+        axios.get("http://localhost:8086/api/request/paid").then(
             response=> {
                 console.log(response.data);
                 this.paidRequests = response.data; 
@@ -271,8 +573,11 @@ export default {
             this.loading = false;
             console.log(error.response);
         });  
+      },
 
-        axios.get("http://localhost:8080/api/reservations").then(
+      getReservations()
+      {
+          axios.get("http://localhost:8086/api/reservations").then(
             response=> {
                 this.reservations = response.data; 
                 console.log(response.data);
@@ -282,11 +587,20 @@ export default {
                 }        
                 this.loading = false;          
             } 
-        ).catch(error => {
+          ).catch(error => {
             this.showEmptyReservations = true;
             this.loading = false;
             console.log(error.response);
         });  
+      }
+
+    },
+    created()
+    {   
+      this.loading = true;
+      this.getRequests();
+      this.getReservations();
+        
     },
 }
 </script>
@@ -303,7 +617,7 @@ export default {
   margin: auto;
 }
 .buttons {
-  width: 110px;
+  width: 120px;
 }
 
 .empty {
