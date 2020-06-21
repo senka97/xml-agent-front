@@ -268,7 +268,7 @@ export default {
             response=> {
                 this.item = response.data;
                 
-                var x = new Date(this.item.endDate[0], this.item.endDate[1]-1, this.item.endDate[2]);
+               /* var x = new Date(this.item.endDate[0], this.item.endDate[1]-1, this.item.endDate[2]);
                 var maxD = new Date(x);
                 this.maxDate = maxD;
 
@@ -287,7 +287,28 @@ export default {
                 else
                 {
                   this.minDate = minD;
-                }           
+                }  */   
+                
+                var now = new Date();
+                var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                var z= new Date(today);
+                console.log(z)
+
+                var x = new Date(this.item.startDate);
+                console.log(x);
+                
+                if(z > x) 
+                {
+                  this.minDate = z;
+                }
+                else
+                {
+                  this.minDate = x;
+                }               
+
+                var y = new Date(this.item.endDate);
+                this.maxDate = y;
+                console.log(y);
             }
         );
         

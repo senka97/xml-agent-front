@@ -127,10 +127,11 @@ export default {
         },
         format_date(value){
          if (value) {
-           let str = value[2] + "-" + value[1] + '-' + value[0] + ' ' + value[3] + ':' + value[4] + ':' + value[5];
+           /*let str = value[2] + "-" + value[1] + '-' + value[0] + ' ' + value[3] + ':' + value[4] + ':' + value[5];
            //let date = new Date(str);
            //console.log(date);
-           return moment(String(str), ['DD-MM-YYYY HH:mm:ss']).format("DD/MM/YYYY HH:mm:ss")
+           return moment(String(str), ['DD-MM-YYYY HH:mm:ss']).format("DD/MM/YYYY HH:mm:ss")*/
+           return moment(String(value)).format("DD/MM/YYYY HH:mm:ss")
           }
       },
    },
