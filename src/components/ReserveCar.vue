@@ -263,52 +263,60 @@ export default {
         id = id.split('?')[1];
         id = id.split('=')[1];
         this.adId = id;
+
+        var now = new Date();
+        var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        var todayDate= new Date(today);
+        console.log(todayDate);
+
         
         axios.get(baseUrl + "/ads/"+id).then(
             response=> {
                 this.item = response.data;
-                
-               /* var x = new Date(this.item.endDate[0], this.item.endDate[1]-1, this.item.endDate[2]);
-                var maxD = new Date(x);
-                this.maxDate = maxD;
 
-                var y = new Date(this.item.startDate[0], this.item.startDate[1]-1, this.item.startDate[2]);
-                var minD = new Date(y);
-
-                var now = new Date();
-                var z = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                var today = new Date(z);
-
-                if(today > minD)
+                if(typeof this.item.startDate === 'string')
                 {
-                  this.minDate = today;
+                  console.log("************ Datum je string")
                   
+                  var x = new Date(this.item.startDate);
+                  console.log(x);
+                
+                  if(todayDate > x) 
+                  {
+                    this.minDate = todayDate;
+                  }
+                  else
+                  {
+                    this.minDate = x;
+                  }               
+
+                  var y = new Date(this.item.endDate);
+                  this.maxDate = y;
+                  console.log(y);
                 }
                 else
                 {
-                  this.minDate = minD;
-                }  */   
-                
-                var now = new Date();
-                var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-                var z= new Date(today);
-                console.log(z)
+                  console.log("************ Datum je niz")
+                  var ed = new Date(this.item.endDate[0], this.item.endDate[1]-1, this.item.endDate[2]);
+                  var maxD = new Date(ed);
+                  this.maxDate = maxD;
 
-                var x = new Date(this.item.startDate);
-                console.log(x);
+                  var sd = new Date(this.item.startDate[0], this.item.startDate[1]-1, this.item.startDate[2]);
+                  var minD = new Date(sd);
+
+                  if(todayDate > minD)
+                  {
+                    this.minDate = todayDate;
+                  
+                  }
+                  else
+                  {
+                    this.minDate = minD;
+                  }   
                 
-                if(z > x) 
-                {
-                  this.minDate = z;
                 }
-                else
-                {
-                  this.minDate = x;
-                }               
-
-                var y = new Date(this.item.endDate);
-                this.maxDate = y;
-                console.log(y);
+              
+                
             }
         );
         
