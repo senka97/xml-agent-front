@@ -94,7 +94,7 @@
         <b-modal id="modal-1" ref="replyModal" title="Your reply" hide-footer>
           <validation-observer ref="observer" v-slot="{ handleSubmit }">
             <b-form @submit.prevent="handleSubmit(postReply)"> 
-              <validation-provider name="Comment" :rules="{ required: true, regex: /^[a-zA-Z0-9?'!,:;. ]*$/, min: 2 }" v-slot="validationContext">
+              <validation-provider name="Comment" :rules="{ required: true, regex: /^[a-zA-Z0-9.,?! ]*$/, min: 2 }" v-slot="validationContext">
                 <b-form-group  align="left" >
                   <b-form-textarea id="textareaReply" placeholder="Enter reply..." rows="3" no-resize v-model="textareaReply" :state="getValidationState(validationContext)"></b-form-textarea>               
                   <b-form-invalid-feedback id="reply">{{ validationContext.errors[0] }}</b-form-invalid-feedback>
