@@ -48,7 +48,7 @@ export default {
     created() {
        if( this.$store.getters.loggedIn){ 
       // proverava iz svoje baze, tako da nije bas up-to-date, ali previse je da se stalno salje soap na glavnu zbog ovoga
-        axios.get("https://localhost:8086/api/request/pending/number").then(
+        axios.get("http://localhost:8086/api/request/pending/number").then(
               response => {
                 this.numberOfNewRequests = response.data;
                 if(this.numberOfNewRequests > 0){

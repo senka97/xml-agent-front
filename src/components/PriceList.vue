@@ -81,7 +81,7 @@
 import NavBar from "../components/NavBar.vue";
 import axios from "axios";
 
-const baseUrl = "https://localhost:8086/api";
+const baseUrl = "http://localhost:8086/api";
 
 export default {
     name: 'PriceList',
