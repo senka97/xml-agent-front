@@ -79,7 +79,7 @@ export default {
 
             this.requestID = this.$route.params.id;
             console.log(this.requestID);
-            axios.get("https://localhost:8086/api/message/request/" + this.requestID).then(
+            axios.get("http://localhost:8086/api/message/request/" + this.requestID).then(
                 response => {
                     this.messagesDTO = response.data;
                     console.log(this.messagesDTO);
@@ -102,7 +102,7 @@ export default {
             }
             let messageRequest = {"requestId": this.requestID, "content":this.message};
             console.log(messageRequest);
-            axios.post("https://localhost:8086/api/message", messageRequest).then(
+            axios.post("http://localhost:8086/api/message", messageRequest).then(
                 response => {
                     console.log(response.data);
                     this.message = "";
