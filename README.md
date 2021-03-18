@@ -1,4 +1,15 @@
-# xml-front
+# xml-agent-front
+
+Frontend aplikacija agentske aplikacije Rent-a-Car sistema.
+
+Glavni repozitorijum: https://github.com/senka97/xml-eureka-zuul
+
+Backend: https://github.com/senka97/xml-agent-back
+
+Korišćene tehnologije: 
+
+  - Vue.js
+
 
 ## Project setup
 ```
